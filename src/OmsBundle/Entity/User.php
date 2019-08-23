@@ -2,7 +2,9 @@
 
 namespace OmsBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Translation\Util\ArrayConverter;
 
 /**
  * User
@@ -49,6 +51,22 @@ class User
      */
     private $dateAdded;
 
+    /**
+     * @var ArrayConverter
+     *
+     * @ORM\ManyToMany(targetEntity="OmsBundle\Entity\Role")
+     * @ORM\JoinTable(name="users_roles",
+     *     joinColumns={@ORM\JoinColumn(name="user_id",referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     *     )
+     *
+     */
+    private $roles;
+    public function __construct()
+    {
+       $this->roles=new ArrayCollection();
+
+    }
 
     /**
      * Get id.

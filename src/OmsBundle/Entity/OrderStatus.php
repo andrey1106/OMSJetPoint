@@ -2,16 +2,15 @@
 
 namespace OmsBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Role
+ * OrderStatus
  *
- * @ORM\Table(name="roles")
- * @ORM\Entity(repositoryClass="OmsBundle\Repository\RoleRepository")
+ * @ORM\Table(name="orderstatuses")
+ * @ORM\Entity(repositoryClass="OmsBundle\Repository\OrderStatusRepository")
  */
-class Role
+class OrderStatus
 {
     /**
      * @var int
@@ -25,9 +24,9 @@ class Role
     /**
      * @var string
      *
-     * @ORM\Column(name="roleName", type="string", length=255, unique=true)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $roleName;
+    private $name;
 
     /**
      * @var \DateTime
@@ -36,16 +35,6 @@ class Role
      */
     private $dateAdded;
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="OmsBundle\Entity\User", mappedBy="roles")
-     */
-    private $users;
-    public function __construct()
-    {
-        $this->users= new ArrayCollection();
-    }
 
     /**
      * Get id.
@@ -58,27 +47,27 @@ class Role
     }
 
     /**
-     * Set roleName.
+     * Set name.
      *
-     * @param string $roleName
+     * @param string $name
      *
-     * @return Role
+     * @return OrderStatus
      */
-    public function setRoleName($roleName)
+    public function setName($name)
     {
-        $this->roleName = $roleName;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get roleName.
+     * Get name.
      *
      * @return string
      */
-    public function getRoleName()
+    public function getName()
     {
-        return $this->roleName;
+        return $this->name;
     }
 
     /**
@@ -86,7 +75,7 @@ class Role
      *
      * @param \DateTime $dateAdded
      *
-     * @return Role
+     * @return OrderStatus
      */
     public function setDateAdded($dateAdded)
     {
