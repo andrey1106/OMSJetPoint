@@ -4,6 +4,8 @@ namespace OmsBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use OmsBundle\Service\Roles\RoleServiceInteface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\Util\ArrayConverter;
 
 /**
@@ -12,7 +14,7 @@ use Symfony\Component\Translation\Util\ArrayConverter;
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="OmsBundle\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var int
@@ -51,20 +53,26 @@ class User
      */
     private $dateAdded;
 
+
     /**
-     * @var ArrayConverter
+     * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="OmsBundle\Entity\Role")
+     * @ORM\ManyToMany(targetEntity="OmsBundle\Entity\Role", inversedBy="users")
      * @ORM\JoinTable(name="users_roles",
      *     joinColumns={@ORM\JoinColumn(name="user_id",referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
      *     )
      *
      */
+    private $userRoles;
+
     private $roles;
+
     public function __construct()
     {
-       $this->roles=new ArrayCollection();
+        $this->userRoles = new ArrayCollection();
+        $this->roles =[];
+
 
     }
 
@@ -172,5 +180,69 @@ class User
     public function getDateAdded()
     {
         return $this->dateAdded;
+    }
+
+
+
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
+     */
+    public function getSalt()
+    {
+        return '';
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getUserRoles()
+    {
+        return $this->userRoles;
+    }
+
+    /**
+     * @param ArrayCollection $userRoles
+     */
+    public function setUserRoles(ArrayCollection $userRoles): void
+    {
+        $this->userRoles = $userRoles;
+    }
+
+    /**
+     * Returns the roles granted to the user.
+     *
+     *     public function getRoles()
+     *     {
+     *         return ['ROLE_USER'];
+     *     }
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return (Role|string)[] The user roles
+     */
+    public function getRoles()
+    {
+        foreach ($this->getUserRoles() as $roles){
+            $rolesArr[]=$roles->getRole();
+        }
+       return $rolesArr;
     }
 }

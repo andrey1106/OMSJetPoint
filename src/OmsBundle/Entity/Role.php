@@ -25,9 +25,9 @@ class Role
     /**
      * @var string
      *
-     * @ORM\Column(name="roleName", type="string", length=255, unique=true)
+     * @ORM\Column(name="role", type="string", length=255, unique=true)
      */
-    private $roleName;
+    private $role = [];
 
     /**
      * @var \DateTime
@@ -39,9 +39,10 @@ class Role
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="OmsBundle\Entity\User", mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity="OmsBundle\Entity\User", mappedBy="userRoles")
      */
     private $users;
+
     public function __construct()
     {
         $this->users= new ArrayCollection();
@@ -58,27 +59,27 @@ class Role
     }
 
     /**
-     * Set roleName.
+     * Set role.
      *
-     * @param string $roleName
+     * @param string $role
      *
      * @return Role
      */
-    public function setRoleName($roleName)
+    public function setRole($role)
     {
-        $this->roleName = $roleName;
+        $this->role = $role;
 
         return $this;
     }
 
     /**
-     * Get roleName.
+     * Get role.
      *
      * @return string
      */
-    public function getRoleName()
+    public function getRole()
     {
-        return $this->roleName;
+        return $this->role;
     }
 
     /**
@@ -103,5 +104,27 @@ class Role
     public function getDateAdded()
     {
         return $this->dateAdded;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getUsers(): ArrayCollection
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param ArrayCollection $users
+     */
+    public function setUsers(ArrayCollection $users): void
+    {
+        $this->users = $users;
+    }
+    public function __toString(){
+        // to show the name of the Category in the select
+        return $this->role;
+        // to show the id of the Category in the select
+        // return $this->id;
     }
 }

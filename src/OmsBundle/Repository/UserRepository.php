@@ -2,6 +2,12 @@
 
 namespace OmsBundle\Repository;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use OmsBundle\Entity\User;
+use Doctrine\ORM\Mapping;
+
 /**
  * UserRepository
  *
@@ -10,4 +16,27 @@ namespace OmsBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function __construct(EntityManagerInterface $em,
+                                Mapping\ClassMetadata $metaData = null)
+    {
+        parent::__construct($em,
+            $metaData == null ?
+                new Mapping\ClassMetadata(\SoftUniBlogBundle\Entity\User::class) :
+                $metaData
+        );
+    }
+
+    public function insert(User $user)
+    {
+
+
+        try {
+            $this->_em->persist($user);
+            $this->_em->flush();
+            return true;
+        } catch (ORMException $e) {
+            return false;
+        }
+
+    }
 }
