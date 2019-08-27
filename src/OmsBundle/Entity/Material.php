@@ -2,7 +2,9 @@
 
 namespace OmsBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * Material
@@ -55,6 +57,16 @@ class Material
      * @ORM\Column(name="dateAdded", type="datetime")
      */
     private $dateAdded;
+
+    /**
+     * One product has many features. This is the inverse side.
+     * @OneToMany(targetEntity="Price", mappedBy="material")
+     */
+    private $prices;
+
+    public function __construct() {
+        $this->prices = new ArrayCollection();
+    }
 
 
     /**
@@ -185,5 +197,21 @@ class Material
     public function getDateAdded()
     {
         return $this->dateAdded;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrices()
+    {
+        return $this->prices;
+    }
+
+    /**
+     * @param mixed $prices
+     */
+    public function setPrices($prices)
+    {
+        $this->prices = $prices;
     }
 }

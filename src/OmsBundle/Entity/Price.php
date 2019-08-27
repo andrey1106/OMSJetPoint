@@ -3,6 +3,8 @@
 namespace OmsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * Price
@@ -27,6 +29,27 @@ class Price
      * @ORM\Column(name="price", type="decimal", precision=10, scale=2)
      */
     private $price;
+
+    /**
+     * Many features have one product. This is the owning side.
+     * @ManyToOne(targetEntity="Product", inversedBy="prices")
+     * @JoinColumn(name="product_id", referencedColumnName="id")
+     */
+    private $product;
+
+    /**
+     * Many features have one product. This is the owning side.
+     * @ManyToOne(targetEntity="Material", inversedBy="prices")
+     * @JoinColumn(name="material_id", referencedColumnName="id")
+     */
+    private $material;
+
+    /**
+     * Many features have one product. This is the owning side.
+     * @ManyToOne(targetEntity="CutOrder", inversedBy="prices")
+     * @JoinColumn(name="order_id", referencedColumnName="id")
+     */
+    private $order;
 
 
     /**
@@ -61,5 +84,53 @@ class Price
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @param mixed $product
+     */
+    public function setProduct($product)
+    {
+        $this->product = $product;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaterial()
+    {
+        return $this->material;
+    }
+
+    /**
+     * @param mixed $material
+     */
+    public function setMaterial($material)
+    {
+        $this->material = $material;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param mixed $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
     }
 }

@@ -2,7 +2,9 @@
 
 namespace OmsBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * Company
@@ -63,6 +65,24 @@ class Company
      */
     private $dateAdded;
 
+    /**
+     * One product has many features. This is the inverse side.
+     * @OneToMany(targetEntity="Contact", mappedBy="company")
+     */
+    private $contacts;
+
+    /**
+     * One product has many features. This is the inverse side.
+     * @OneToMany(targetEntity="CutOrder", mappedBy="company")
+     */
+    private $orders;
+
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
+    }
 
     /**
      * Get id.
@@ -217,4 +237,38 @@ class Company
     {
         return $this->dateAdded;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getContacts()
+    {
+        return $this->contacts;
+    }
+
+    /**
+     * @param mixed $contacts
+     */
+    public function setContacts($contacts)
+    {
+        $this->contacts = $contacts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param mixed $orders
+     */
+    public function setOrders($orders)
+    {
+        $this->orders = $orders;
+    }
+
+
 }

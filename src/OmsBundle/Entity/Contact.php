@@ -3,6 +3,8 @@
 namespace OmsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * Contact
@@ -55,6 +57,13 @@ class Contact
      * @ORM\Column(name="dateAdded", type="datetime")
      */
     private $dateAdded;
+
+    /**
+     * Many features have one product. This is the owning side.
+     * @ManyToOne(targetEntity="Company", inversedBy="contacts")
+     * @JoinColumn(name="company_id", referencedColumnName="id")
+     */
+    private $company;
 
 
     /**
@@ -185,5 +194,21 @@ class Contact
     public function getDateAdded()
     {
         return $this->dateAdded;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param mixed $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
     }
 }
