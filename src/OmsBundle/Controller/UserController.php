@@ -5,6 +5,7 @@ namespace OmsBundle\Controller;
 use OmsBundle\Entity\Role;
 use OmsBundle\Entity\User;
 use OmsBundle\Service\Roles\RoleServiceInteface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,10 +39,12 @@ class UserController extends Controller
      * Creates a new user entity.
      *
      * @Route("/new", name="user_new", methods={"GET", "POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function newAction(Request $request)
     {
-        $user = new User (RoleServiceInteface::class );
+        $user = new User ();
         $form = $this->createForm('OmsBundle\Form\UserType', $user);
         $form->handleRequest($request);
 
@@ -65,11 +68,13 @@ class UserController extends Controller
      * Finds and displays a user entity.
      *
      * @Route("/{id}", name="user_show", methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function showAction(User $user)
     {
         $deleteForm = $this->createDeleteForm($user);
-
+        $user->getRoles();
         return $this->render('user/show.html.twig', array(
             'user' => $user,
             'delete_form' => $deleteForm->createView(),
@@ -80,6 +85,8 @@ class UserController extends Controller
      * Displays a form to edit an existing user entity.
      *
      * @Route("/{id}/edit", name="user_edit",methods={"GET", "POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function editAction(Request $request, User $user)
     {
@@ -106,6 +113,8 @@ class UserController extends Controller
      * Deletes a user entity.
      *
      * @Route("/{id}", name="user_delete",methods={"DELETE"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function deleteAction(Request $request, User $user)
     {

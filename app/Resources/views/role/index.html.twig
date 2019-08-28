@@ -1,41 +1,47 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Roles list</h1>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <h1>Roles list</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Role</th>
-                <th>Dateadded</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for role in roles %}
-            <tr>
-                <td><a href="{{ path('role_show', { 'id': role.id }) }}">{{ role.id }}</a></td>
-                <td>{{ role.role }}</td>
-                <td>{% if role.dateAdded %}{{ role.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('role_show', { 'id': role.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('role_edit', { 'id': role.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Role</th>
+                        <th>Dateadded</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for role in roles %}
+                        <tr>
+                            <td><a href="{{ path('role_show', { 'id': role.id }) }}">{{ role.id }}</a></td>
+                            <td>{{ role.role }}</td>
+                            <td>{% if role.dateAdded %}{{ role.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td>
+                                <ul>
+                                    <li>
+                                        <a href="{{ path('role_show', { 'id': role.id }) }}">show</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('role_edit', { 'id': role.id }) }}">edit</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('role_new') }}">Create a new role</a>
-        </li>
-    </ul>
+                <ul>
+                    <li>
+                        <a href="{{ path('role_new') }}">Create a new role</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -4,34 +4,32 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-auto">
-                <h1>Users list</h1>
+                <h1>Orderstatuses list</h1>
 
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Fullname</th>
+                        <th>Name</th>
                         <th>Dateadded</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for user in users %}
+                    {% for orderStatus in orderStatuses %}
                         <tr>
-                            <td><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.id }}</a></td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.password }}</td>
-                            <td>{{ user.fullName }}</td>
-                            <td>{% if user.dateAdded %}{{ user.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td>
+                                <a href="{{ path('admin_orderstatus_show', { 'id': orderStatus.id }) }}">{{ orderStatus.id }}</a>
+                            </td>
+                            <td>{{ orderStatus.name }}</td>
+                            <td>{% if orderStatus.dateAdded %}{{ orderStatus.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
                             <td>
                                 <ul>
                                     <li>
-                                        <a href="{{ path('user_show', { 'id': user.id }) }}">show</a>
+                                        <a href="{{ path('admin_orderstatus_show', { 'id': orderStatus.id }) }}">show</a>
                                     </li>
                                     <li>
-                                        <a href="{{ path('user_edit', { 'id': user.id }) }}">edit</a>
+                                        <a href="{{ path('admin_orderstatus_edit', { 'id': orderStatus.id }) }}">edit</a>
                                     </li>
                                 </ul>
                             </td>
@@ -42,7 +40,7 @@
 
                 <ul>
                     <li>
-                        <a href="{{ path('user_new') }}">Create a new user</a>
+                        <a href="{{ path('admin_orderstatus_new') }}">Create a new orderStatus</a>
                     </li>
                 </ul>
             </div>

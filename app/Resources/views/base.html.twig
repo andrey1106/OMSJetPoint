@@ -20,7 +20,7 @@
                 crossorigin="anonymous"></script>
     {% endblock %}
 
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">OMS JetPoint</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
@@ -49,9 +49,10 @@
                         Companies
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="{{ path('company_index') }}">List companies</a>
+                        <a class="dropdown-item" href="{{ path('company_new') }}">Create new company</a>
+                        <a class="dropdown-item" href="{{ path('contact_index') }}">List contacts</a>
+                        <a class="dropdown-item" href="{{ path('contact_new') }}">Create new contact</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -60,9 +61,8 @@
                         Products
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="{{ path('product_index') }}">List</a>
+                        <a class="dropdown-item" href="{{ path('product_new') }}">Create new product</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -71,9 +71,8 @@
                         Materials
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="{{ path('material_index') }}">List</a>
+                        <a class="dropdown-item" href="{{ path('material_new') }}">Create new material</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -84,7 +83,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{{ path('user_index') }}">Users</a>
                         <a class="dropdown-item" href="{{ path('role_index') }}">Roles</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="{{ path('admin_orderstatus_index') }}">OrderStatus</a>
                     </div>
                 </li>
             </ul>
@@ -92,8 +91,9 @@
                 <li class="nav-item active">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <a class="nav-link" href="{{ path('security_logout') }}">Logout</a>
-                   {% else %}
-                    <a class="nav-link" href="{{ path('security_login') }}">Login<span class="sr-only">(current)</span></a>
+                    {% else %}
+                        <a class="nav-link" href="{{ path('security_login') }}">Login<span
+                                    class="sr-only">(current)</span></a>
                     {% endif %}
                 </li>
             </ul>
@@ -103,15 +103,15 @@
 </head>
 <body>
 
-{% block body %}{% endblock %}
+        {% block body %}{% endblock %}
+
+</body>
 {% block footer %}
-    <footer style="position: absolute; bottom: 60px; width: 100%;height: 60px; line-height: 60px;">
+    <footer>
         <div class="container modal-footer">
             <p>&copy; 2019 - OMS JetPoint </p>
         </div>
     </footer>
 {% endblock %}
-</body>
-
 
 </html>

@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-auto">
-                <h1>User edit</h1>
+                <h1>Company edit</h1>
 
                 {{ form_start(edit_form) }}
                 {{ form_widget(edit_form) }}
@@ -13,7 +13,10 @@
 
                 <ul>
                     <li>
-                        <a href="{{ path('user_index') }}">Back to the list</a>
+                        <a href="{{ path('company_index') }}">Back to the list</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('contact_new', { 'companyid': company.id }) }}">Create new contact</a>
                     </li>
                     <li>
                         {{ form_start(delete_form) }}
@@ -24,5 +27,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}

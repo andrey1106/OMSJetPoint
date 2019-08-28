@@ -4,31 +4,43 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-auto">
-                <h1>Role</h1>
+                <h1>Material</h1>
 
                 <table class="table table-striped">
                     <tbody>
                     <tr>
                         <th>Id</th>
-                        <td>{{ role.id }}</td>
+                        <td>{{ material.id }}</td>
                     </tr>
                     <tr>
-                        <th>Role</th>
-                        <td>{{ role.role }}</td>
+                        <th>Name</th>
+                        <td>{{ material.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Width</th>
+                        <td>{{ material.width }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cutspeed</th>
+                        <td>{{ material.cutSpeed }}</td>
+                    </tr>
+                    <tr>
+                        <th>Drillingtime</th>
+                        <td>{{ material.drillingTime }}</td>
                     </tr>
                     <tr>
                         <th>Dateadded</th>
-                        <td>{% if role.dateAdded %}{{ role.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        <td>{% if material.dateAdded %}{{ material.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
                     </tr>
                     </tbody>
                 </table>
 
                 <ul>
                     <li>
-                        <a href="{{ path('role_index') }}">Back to the list</a>
+                        <a href="{{ path('material_index') }}">Back to the list</a>
                     </li>
                     <li>
-                        <a href="{{ path('role_edit', { 'id': role.id }) }}">Edit</a>
+                        <a href="{{ path('material_edit', { 'id': material.id }) }}">Edit</a>
                     </li>
                     <li>
                         {{ form_start(delete_form) }}

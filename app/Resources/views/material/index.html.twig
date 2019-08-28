@@ -4,34 +4,36 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-auto">
-                <h1>Users list</h1>
+                <h1>Materials list</h1>
 
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Fullname</th>
+                        <th>Name</th>
+                        <th>Width</th>
+                        <th>Cutspeed</th>
+                        <th>Drillingtime</th>
                         <th>Dateadded</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for user in users %}
+                    {% for material in materials %}
                         <tr>
-                            <td><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.id }}</a></td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.password }}</td>
-                            <td>{{ user.fullName }}</td>
-                            <td>{% if user.dateAdded %}{{ user.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td><a href="{{ path('material_show', { 'id': material.id }) }}">{{ material.id }}</a></td>
+                            <td>{{ material.name }}</td>
+                            <td>{{ material.width }}</td>
+                            <td>{{ material.cutSpeed }}</td>
+                            <td>{{ material.drillingTime }}</td>
+                            <td>{% if material.dateAdded %}{{ material.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
                             <td>
                                 <ul>
                                     <li>
-                                        <a href="{{ path('user_show', { 'id': user.id }) }}">show</a>
+                                        <a href="{{ path('material_show', { 'id': material.id }) }}">show</a>
                                     </li>
                                     <li>
-                                        <a href="{{ path('user_edit', { 'id': user.id }) }}">edit</a>
+                                        <a href="{{ path('material_edit', { 'id': material.id }) }}">edit</a>
                                     </li>
                                 </ul>
                             </td>
@@ -42,7 +44,7 @@
 
                 <ul>
                     <li>
-                        <a href="{{ path('user_new') }}">Create a new user</a>
+                        <a href="{{ path('material_new') }}">Create a new material</a>
                     </li>
                 </ul>
             </div>

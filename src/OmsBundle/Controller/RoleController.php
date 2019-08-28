@@ -4,6 +4,7 @@ namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Role;
 use OmsBundle\Service\Roles\RoleServiceInteface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,6 +28,7 @@ class RoleController extends Controller
      *
      * @Route("/", name="role_index", methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function indexAction()
     {
@@ -41,6 +43,7 @@ class RoleController extends Controller
      *
      * @Route("/new", name="role_new", methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function new(Request $request)
     {
@@ -53,6 +56,7 @@ class RoleController extends Controller
      *
      * @Route("/new", name="new_save", methods={"POST"})
      *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function newProcess(Request $request)
     {   $role= new Role();
@@ -70,6 +74,7 @@ class RoleController extends Controller
      *
      * @Route("/{id}", name="role_show",methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function showAction(Role $role)
     {
@@ -86,6 +91,7 @@ class RoleController extends Controller
      *
      * @Route("/{id}/edit", name="role_edit",methods={"GET", "POST"})
      *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function editAction(Request $request, Role $role)
     {
@@ -111,6 +117,7 @@ class RoleController extends Controller
      *
      * @Route("/{id}", name="role_delete",methods={"DELETE"})
      *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function deleteAction(Request $request, Role $role)
     {
