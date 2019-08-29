@@ -20,8 +20,9 @@ class PriceType extends AbstractType
                     'class' => 'OmsBundle:Product',])
                 ->add('material',EntityType::class,[
                     'class' => 'OmsBundle:Material',])
-                ->add('order',EntityType::class,[
-                    'class' => 'OmsBundle:CutOrder',]);
+//                ->add('order',EntityType::class,[
+//                    'class' => 'OmsBundle:CutOrder',])
+        ;
     }/**
      * {@inheritdoc}
      */

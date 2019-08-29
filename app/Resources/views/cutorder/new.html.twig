@@ -1,11 +1,35 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Cutorder creation</h1>
+    <h1>Create Cut Order</h1>
 
     {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Create" />
+    <table>
+        <tr>
+            <td>{{ form_row(form.company) }}</td>
+            <td>{{ form_row(form.contact) }}</td>
+            <td>{{ form_row(form.orderstatus) }}</td>
+
+        </tr>
+    </table>
+
+    <h3>Order Elements</h3>
+    <table>
+
+            {# iterate over each existing tag and render its only field: name #}
+            {% for price in form.prices %}
+        <tr class="prices">
+                <td>{{ form_row(price.product) }}</td>
+                <td>{{ form_row(price.material) }}</td>
+{#                <td>{{ form_row(price.order) }}</td>#}
+                <td>{{ form_row(price.quantity) }}</td>
+                <td>{{ form_row(price.price) }}</td>
+        </tr>
+            {% endfor %}
+
+    </table>
+    {{ form_widget(form) }}
+    <input type="submit" value="Create"/>
     {{ form_end(form) }}
 
     <ul>

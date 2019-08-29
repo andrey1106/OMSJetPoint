@@ -54,9 +54,9 @@ class CutOrderController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $cutOrder->setTotalNoVAT(30);
             $cutOrder->setDateAdded(new \DateTime());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($cutOrder);
-            $em->flush();
+            //$em = $this->getDoctrine()->getManager();
+            //$em->persist($cutOrder);
+            //$em->flush();
 
             return $this->redirectToRoute('cutorder_show', array('id' => $cutOrder->getId()));
         }
