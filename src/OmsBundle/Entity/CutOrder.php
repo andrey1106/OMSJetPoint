@@ -197,4 +197,12 @@ class CutOrder
     {
         $this->contact = $contact;
     }
+
+    //TODO : Remove This Part
+    public function __toString(){
+        // to show the name of the Category in the select
+        return strval($this->id);
+        // to show the id of the Category in the select
+        // return $this->id;
+    }
 }

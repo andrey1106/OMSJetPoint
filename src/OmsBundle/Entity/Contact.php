@@ -225,7 +225,7 @@ class Contact
     }
 
     /**
-     * @return ArrayCollection
+     * @return mixed
      */
     public function getOrders()
     {
@@ -233,11 +233,18 @@ class Contact
     }
 
     /**
-     * @param ArrayCollection $orders
+     * @param mixed $orders
      */
     public function setOrders($orders)
     {
         $this->orders = $orders;
+    }
+
+    public function __toString(){
+        // to show the name of the Category in the select
+        return $this->name;
+        // to show the id of the Category in the select
+        // return $this->id;
     }
 
 

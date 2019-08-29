@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Cutorders list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Totalnovat</th>
+                <th>Dateadded</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cutOrder in cutOrders %}
+            <tr>
+                <td><a href="{{ path('cutorder_show', { 'id': cutOrder.id }) }}">{{ cutOrder.id }}</a></td>
+                <td>{{ cutOrder.totalNoVAT }}</td>
+                <td>{% if cutOrder.dateAdded %}{{ cutOrder.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('cutorder_show', { 'id': cutOrder.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('cutorder_new') }}">Create a new cutOrder</a>
+        </li>
+    </ul>
+{% endblock %}
