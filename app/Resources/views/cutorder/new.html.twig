@@ -14,18 +14,28 @@
     </table>
 
     <h3>Order Elements</h3>
-    <table>
-
-            {# iterate over each existing tag and render its only field: name #}
-            {% for price in form.prices %}
-        <tr class="prices">
+    <table class="prices" data-prototype="
+       <td>{{ form_row(form.prices.vars.prototype.product)|e }}</td>
+       <td>{{ form_row(form.prices.vars.prototype.material)|e }}</td>
+       <td>{{ form_row(form.prices.vars.prototype.quantity)|e }}</td>
+       <td>{{ form_row(form.prices.vars.prototype.price)|e }}</td>
+       ">
+        <tr>
+            <th>Product</th>
+            <th>Material</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        {# iterate over each existing tag and render its only field: name #}
+        {% for price in form.prices %}
+            <tr class="prices">
                 <td>{{ form_row(price.product) }}</td>
                 <td>{{ form_row(price.material) }}</td>
-{#                <td>{{ form_row(price.order) }}</td>#}
+                {#                <td>{{ form_row(price.order) }}</td>#}
                 <td>{{ form_row(price.quantity) }}</td>
                 <td>{{ form_row(price.price) }}</td>
-        </tr>
-            {% endfor %}
+            </tr>
+        {% endfor %}
 
     </table>
     {{ form_widget(form) }}
@@ -37,4 +47,83 @@
             <a href="{{ path('cutorder_index') }}">Back to the list</a>
         </li>
     </ul>
+
+    <script>
+        // setup an "add a tag" link
+        var $addTagLink = $('<a href="#" class="add_tag_link"> <button class="btn btn-success">Add Row</button></a>');
+        var $newLinkLi = $('<tr></tr>').append($addTagLink);
+        jQuery(document).ready(function () {
+
+            // Get the ul that holds the collection of tags
+            var $collectionHolder = $('table.prices');
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addTagLink.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see code block below)
+                addTagForm($collectionHolder, $newLinkLi);
+                //Select2
+                //Preventing enter
+                $('input').on('keydown', function (event) {
+                    var x = event.which;
+                    if (x === 13) {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+
+        });
+
+        function addTagForm($collectionHolder, $newLinkLi) {
+
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '$$name$$' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<tr></tr>').append(newForm);
+
+            // also add a remove button, just for this example
+            $newFormLi.append('<button href="#" class="remove-tag"><span  aria-hidden="true"></span></button>');
+
+            $newLinkLi.before($newFormLi);
+
+            // handle the removal, just for this example
+            $('.remove-tag').click(function (e) {
+                e.preventDefault();
+
+                $(this).parent().remove();
+
+                return false;
+            });
+        }
+
+        //Preventing enter
+        $('input').on('keydown', function (event) {
+            var x = event.which;
+            if (x === 13) {
+                event.preventDefault();
+            }
+        });
+
+
+    </script>
 {% endblock %}
