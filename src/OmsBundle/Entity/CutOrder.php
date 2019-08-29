@@ -25,14 +25,7 @@ class CutOrder
      */
     private $id;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="quantity", type="integer")
-     */
-    private $quantity;
-
-    /**
+     /**
      * @var string
      *
      * @ORM\Column(name="totalNoVAT", type="decimal", precision=10, scale=2)
@@ -84,29 +77,7 @@ class CutOrder
         return $this->id;
     }
 
-    /**
-     * Set quantity.
-     *
-     * @param int $quantity
-     *
-     * @return CutOrder
-     */
-    public function setQuantity($quantity)
-    {
-        $this->quantity = $quantity;
 
-        return $this;
-    }
-
-    /**
-     * Get quantity.
-     *
-     * @return int
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
 
     /**
      * Set totalNoVAT.

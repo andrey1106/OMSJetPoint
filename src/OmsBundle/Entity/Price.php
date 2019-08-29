@@ -31,6 +31,13 @@ class Price
     private $price;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="quantity", type="integer")
+     */
+    private $quantity;
+
+    /**
      * Many features have one product. This is the owning side.
      * @ManyToOne(targetEntity="Product", inversedBy="prices")
      * @JoinColumn(name="product_id", referencedColumnName="id")
@@ -84,6 +91,30 @@ class Price
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set quantity.
+     *
+     * @param int $quantity
+     *
+     * @return Price
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get quantity.
+     *
+     * @return int
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
     }
 
     /**
