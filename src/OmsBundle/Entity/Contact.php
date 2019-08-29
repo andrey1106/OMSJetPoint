@@ -2,9 +2,11 @@
 
 namespace OmsBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * Contact
@@ -65,6 +67,16 @@ class Contact
      */
     private $company;
 
+    /**
+     * One product has many features. This is the inverse side.
+     * @OneToMany(targetEntity="CutOrder", mappedBy="contact")
+     */
+    private $orders;
+
+    public function __construct()
+    {
+        $this->orders= new ArrayCollection();
+    }
 
     /**
      * Get id.
@@ -211,4 +223,22 @@ class Contact
     {
         $this->company = $company;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param ArrayCollection $orders
+     */
+    public function setOrders($orders)
+    {
+        $this->orders = $orders;
+    }
+
+
 }

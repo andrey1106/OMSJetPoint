@@ -59,6 +59,13 @@ class CutOrder
      */
     private $company;
 
+    /**
+     * Many features have one product. This is the owning side.
+     * @ManyToOne(targetEntity="Contact", inversedBy="orders")
+     * @JoinColumn(name="contact_id", referencedColumnName="id")
+     */
+    private $contact;
+
 
 
     public function __construct() {
@@ -173,5 +180,21 @@ class CutOrder
     public function setCompany($company)
     {
         $this->company = $company;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param mixed $contact
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
     }
 }
