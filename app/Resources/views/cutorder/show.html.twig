@@ -1,36 +1,70 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Cutorder</h1>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-sm-auto">
+                <h3>Show cut order</h3>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ cutOrder.id }}</td>
-            </tr>
-            <tr>
-                <th>Totalnovat</th>
-                <td>{{ cutOrder.totalNoVAT }}</td>
-            </tr>
-            <tr>
-                <th>Dateadded</th>
-                <td>{% if cutOrder.dateAdded %}{{ cutOrder.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-        </tbody>
-    </table>
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Phone</th>
+                        <th>Total no VAT</th>
+                        <th>Date added</th>
+                        <th>Order status</th>
+                    </tr>
+                    <tr>
+                        <td>{{ cutOrder.id }}</td>
+                        <td>{{ cutOrder.company.name }}</td>
+                        <td>{{ cutOrder.contact.name }}</td>
+                        <td>{{ cutOrder.contact.phone }}</td>
+                        <td>{{ cutOrder.totalNoVAT }}</td>
+                        <td>{% if cutOrder.dateAdded %}{{ cutOrder.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        <td>{{ cutOrder.orderstatus.name }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col">
+                        <div class="col-sm-auto">
+                            <table class="table table-striped">
+                                <th>Product</th>
+                                <th>Material</th>
+                                <th>Quantity</th>
+                                <th>Price no VAT</th>
+                                {% for price in cutOrder.prices %}
+                                    <tr>
 
-    <ul>
-        <li>
-            <a href="{{ path('cutorder_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+                                        <td>{{ price.product }}</td>
+                                        <td>{{ price.material }}</td>
+                                        <td>{{ price.quantity }}</td>
+                                        <td>{{ price.price }}</td>
+
+
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <ul>
+                    <li>
+                        <a href="{{ path('cutorder_index') }}">Back to the list</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">Edit</a>
+                    </li>
+                    <li>
+                        {{ form_start(delete_form) }}
+                        <input type="submit" value="Delete">
+                        {{ form_end(delete_form) }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

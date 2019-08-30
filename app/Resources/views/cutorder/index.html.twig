@@ -1,41 +1,53 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Cutorders list</h1>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <h3>Orders list</h3>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Totalnovat</th>
-                <th>Dateadded</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for cutOrder in cutOrders %}
-            <tr>
-                <td><a href="{{ path('cutorder_show', { 'id': cutOrder.id }) }}">{{ cutOrder.id }}</a></td>
-                <td>{{ cutOrder.totalNoVAT }}</td>
-                <td>{% if cutOrder.dateAdded %}{{ cutOrder.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('cutorder_show', { 'id': cutOrder.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <table class="table table-sriped">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Total no VAT</th>
+                        <th>Date added</th>
+                        <th>Order status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for cutOrder in cutOrders %}
+                        <tr>
+                            <td><a href="{{ path('cutorder_show', { 'id': cutOrder.id }) }}">{{ cutOrder.id }}</a></td>
+                            <td>{{ cutOrder.company.name }}</td>
+                            <td>{{ cutOrder.contact.name }}</td>
+                            <td>{{ cutOrder.totalNoVAT }}</td>
+                            <td>{% if cutOrder.dateAdded %}{{ cutOrder.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td>{{ cutOrder.orderstatus.name }}</td>
+                            <td>
+                                <ul>
+                                    <li>
+                                        <a href="{{ path('cutorder_show', { 'id': cutOrder.id }) }}">show</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">edit</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('cutorder_new') }}">Create a new cutOrder</a>
-        </li>
-    </ul>
+                <ul>
+                    <li>
+                        <a href="{{ path('cutorder_new') }}">Create a new cutOrder</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

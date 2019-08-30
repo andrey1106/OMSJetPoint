@@ -46,20 +46,20 @@ class CutOrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cutOrder->setTotalNoVAT(30);
             $cutOrder->setDateAdded(new \DateTime());
             $em = $this->getDoctrine()->getManager();
-            $em->persist($cutOrder);
             $formData = $form->getData()->getPrices();
-            foreach ($formData as $record) {
-                $record->setOrder($cutOrder);
-                $em->persist($record);
-                $dump[] = $record;
+            $totalPriceNoVAT = 0;
+            foreach ($formData as $recordPrice) {
+                $recordPrice->setOrder($cutOrder);
+                $totalPriceNoVAT = $totalPriceNoVAT + $recordPrice->getPrice();
+                $em->persist($recordPrice);
             }
-
+            $cutOrder->setTotalNoVAT($totalPriceNoVAT);
+            $em->persist($cutOrder);
             $em->flush();
-            return $this->render('default/dump.html.twig', ['dump' => $dump]);
-            //return $this->redirectToRoute('cutorder_show', array('id' => $cutOrder->getId()));
+           // return $this->render('default/dump.html.twig', ['dump' => $dump]);
+            return $this->redirectToRoute('cutorder_show', array('id' => $cutOrder->getId()));
         }
 
         return $this->render('cutorder/new.html.twig', array(
@@ -97,9 +97,19 @@ class CutOrderController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em = $this->getDoctrine()->getManager();
+            $editFormData = $editForm->getData()->getPrices();
+            $totalPriceNoVAT = 0;
+            foreach ($editFormData as $recordPrice) {
+                $recordPrice->setOrder($cutOrder);
+                $totalPriceNoVAT = $totalPriceNoVAT + $recordPrice->getPrice();
+                $em->persist($recordPrice);
+            }
+            $cutOrder->setTotalNoVAT($totalPriceNoVAT);
+            $em->persist($cutOrder);
+            $em->flush();
 
-            return $this->redirectToRoute('cutorder_edit', array('id' => $cutOrder->getId()));
+                        return $this->redirectToRoute('cutorder_edit', array('id' => $cutOrder->getId()));
         }
 
         return $this->render('cutorder/edit.html.twig', array(

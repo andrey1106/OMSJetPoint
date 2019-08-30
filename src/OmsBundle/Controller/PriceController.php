@@ -4,8 +4,8 @@ namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Price;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Price controller.
@@ -17,8 +17,8 @@ class PriceController extends Controller
     /**
      * Lists all price entities.
      *
-     * @Route("/", name="price_index")
-     * @Method("GET")
+     * @Route("/", name="price_index",methods={"GET"})
+     *
      */
     public function indexAction()
     {
@@ -34,8 +34,8 @@ class PriceController extends Controller
     /**
      * Creates a new price entity.
      *
-     * @Route("/new", name="price_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="price_new",methods={"GET", "POST"})
+     *
      */
     public function newAction(Request $request)
     {
@@ -60,8 +60,8 @@ class PriceController extends Controller
     /**
      * Finds and displays a price entity.
      *
-     * @Route("/{id}", name="price_show")
-     * @Method("GET")
+     * @Route("/{id}", name="price_show",methods={"GET"})
+     *
      */
     public function showAction(Price $price)
     {
@@ -76,8 +76,8 @@ class PriceController extends Controller
     /**
      * Displays a form to edit an existing price entity.
      *
-     * @Route("/{id}/edit", name="price_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="price_edit",methods={"GET", "POST"})
+     *
      */
     public function editAction(Request $request, Price $price)
     {
@@ -101,8 +101,8 @@ class PriceController extends Controller
     /**
      * Deletes a price entity.
      *
-     * @Route("/{id}", name="price_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="price_delete",methods={"DELETE"})
+     *
      */
     public function deleteAction(Request $request, Price $price)
     {
@@ -123,7 +123,7 @@ class PriceController extends Controller
      *
      * @param Price $price The price entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface
      */
     private function createDeleteForm(Price $price)
     {
@@ -133,4 +133,22 @@ class PriceController extends Controller
             ->getForm()
         ;
     }
+
+    /**
+     * Delete price element from edit Order
+     *
+     * @Route("/{id}/delete/{cutorderid}", name="price_delete_cutorder",methods={"GET"})
+     *
+     */
+    public function deleteFromOrder(Request $request, Price $price, $cutorderid)
+    {
+
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($price);
+            $em->flush();
+
+
+        return $this->redirectToRoute('cutorder_edit',['id' => $cutorderid]);
+    }
+
 }

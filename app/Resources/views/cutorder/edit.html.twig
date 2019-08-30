@@ -4,6 +4,41 @@
     <h1>Cutorder edit</h1>
 
     {{ form_start(edit_form) }}
+    <table>
+        <tr>
+            <td>{{ form_row(edit_form.company) }}</td>
+            <td>{{ form_row(edit_form.contact) }}</td>
+            <td>{{ form_row(edit_form.orderstatus) }}</td>
+{#            <td>{{ cutOrder.totalNoVAT }}</td>#}
+
+        </tr>
+    </table>
+    <h3>Order Elements</h3>
+    <table class="prices" data-prototype="
+       <td>{{ form_row(edit_form.prices.vars.prototype.product)|e }}</td>
+       <td>{{ form_row(edit_form.prices.vars.prototype.material)|e }}</td>
+       <td>{{ form_row(edit_form.prices.vars.prototype.quantity)|e }}</td>
+       <td>{{ form_row(edit_form.prices.vars.prototype.price)|e }}</td>
+       ">
+        <tr>
+            <th>Product</th>
+            <th>Material</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        {# iterate over each existing tag and render its only field: name #}
+        {% for price in edit_form.prices %}
+            <tr class="prices">
+                <td>{{ form_row(price.product) }}</td>
+                <td>{{ form_row(price.material) }}</td>
+                {#                <td>{{ form_row(price.order) }}</td>#}
+                <td>{{ form_row(price.quantity) }}</td>
+                <td>{{ form_row(price.price) }}</td>
+                <td><a href="#" class="btn" data-href="{{path('price_delete_cutorder', { 'id': price.vars.value.id, 'cutorderid':edit_form.vars.value.id })}}" data-toggle="modal" data-target="#confirm-delete"><i class="fas fa-trash-alt"></i></a></td>
+            </tr>
+        {% endfor %}
+
+    </table>
         {{ form_widget(edit_form) }}
         <input type="submit" value="Edit" />
     {{ form_end(edit_form) }}
@@ -18,4 +53,135 @@
             {{ form_end(delete_form) }}
         </li>
     </ul>
+    {#Modal Form#}
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Delete product
+                </div>
+                <div class="modal-body">
+                    Do you realy want to delete product from Order.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger btn-ok">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#End Modal Form#}
+
+    <script>
+        //Modal Form Script
+        $('#confirm-delete').on('show.bs.modal', function(e) {
+            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+        });
+        //End
+
+        //Dependent Form Fileds
+        var $company = $('#omsbundle_cutorder_company');
+        // When sport gets selected ...
+        $company.change(function() {
+            // ... retrieve the corresponding form.
+            var $form = $(this).closest('form');
+            // Simulate form data, but only include the selected sport value.
+            var data = {};
+            data[$company.attr('name')] = $company.val();
+            // Submit data via AJAX to the form's action path.
+            $.ajax({
+                url : $form.attr('action'),
+                type: $form.attr('method'),
+                data : data,
+                success: function(html) {
+                    // Replace current position field ...
+                    $('#omsbundle_cutorder_contact').replaceWith(
+                        // ... with the returned one from the AJAX response.
+                        $(html).find('#omsbundle_cutorder_contact')
+                    );
+                    // Position field now displays the appropriate positions.
+                }
+            });
+        });
+        //End
+
+
+
+        // setup an "add a tag" link
+        var $addTagLink = $('<a href="#" class="add_tag_link"> <button class="btn btn-success btn-sm">Add Row</button></a>');
+        var $newLinkLi = $('<tr></tr>').append($addTagLink);
+        jQuery(document).ready(function () {
+
+            // Get the ul that holds the collection of tags
+            var $collectionHolder = $('table.prices');
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addTagLink.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see code block below)
+                addTagForm($collectionHolder, $newLinkLi);
+                //Select2
+                //Preventing enter
+                $('input').on('keydown', function (event) {
+                    var x = event.which;
+                    if (x === 13) {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+
+        });
+
+        function addTagForm($collectionHolder, $newLinkLi) {
+
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '$$name$$' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<tr></tr>').append(newForm);
+
+            // also add a remove button, just for this example
+            $newFormLi.append('<button href="#" class="remove-tag"><i class="fas fa-trash-alt"></i><span  aria-hidden="true"></span></button>');
+
+            $newLinkLi.before($newFormLi);
+
+            // handle the removal, just for this example
+            $('.remove-tag').click(function (e) {
+                e.preventDefault();
+
+                $(this).parent().remove();
+
+                return false;
+            });
+        }
+
+        //Preventing enter
+        $('input').on('keydown', function (event) {
+            var x = event.which;
+            if (x === 13) {
+                event.preventDefault();
+            }
+        });
+
+
+    </script>
 {% endblock %}
