@@ -42,23 +42,24 @@ class CutOrderController extends Controller
     public function newAction(Request $request)
     {
         $cutOrder = new Cutorder();
-       //TODO Remove Static Test Code
-        $price1=new Price();
-        $cutOrder->getPrices()->add($price1);
-        $price2=new Price();
-        $cutOrder->getPrices()->add($price2);
-        //TODO END TestCode
         $form = $this->createForm('OmsBundle\Form\CutOrderType', $cutOrder);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $cutOrder->setTotalNoVAT(30);
             $cutOrder->setDateAdded(new \DateTime());
-            //$em = $this->getDoctrine()->getManager();
-            //$em->persist($cutOrder);
-            //$em->flush();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($cutOrder);
+            $formData = $form->getData()->getPrices();
+            foreach ($formData as $record) {
+                $record->setOrder($cutOrder);
+                $em->persist($record);
+                $dump[] = $record;
+            }
 
-            return $this->redirectToRoute('cutorder_show', array('id' => $cutOrder->getId()));
+            $em->flush();
+            return $this->render('default/dump.html.twig', ['dump' => $dump]);
+            //return $this->redirectToRoute('cutorder_show', array('id' => $cutOrder->getId()));
         }
 
         return $this->render('cutorder/new.html.twig', array(
@@ -140,7 +141,6 @@ class CutOrderController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('cutorder_delete', array('id' => $cutOrder->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

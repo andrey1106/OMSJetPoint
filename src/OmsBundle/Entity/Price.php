@@ -56,7 +56,7 @@ class Price
      * @ManyToOne(targetEntity="CutOrder", inversedBy="prices")
      * @JoinColumn(name="order_id", referencedColumnName="id")
      */
-    private $order;
+    public $order;
 
 
     /**
@@ -164,4 +164,5 @@ class Price
     {
         $this->order = $order;
     }
+
 }
