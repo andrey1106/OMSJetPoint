@@ -5,6 +5,7 @@ namespace OmsBundle\Controller;
 use OmsBundle\Entity\Product;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -49,6 +50,16 @@ class ProductController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product->setDateAdded(new \DateTime());
+
+            /**
+             * @var UploadedFile $file
+             */
+            $file=$form['pictureFile']->getData();
+            $fileName= md5(uniqid()).".".$file->guessExtension();
+            if($file){
+                $file->move($this->getParameter('product_image_directory'),$fileName);
+                $product->setPicture($fileName);
+            }
             $em = $this->getDoctrine()->getManager();
             $em->persist($product);
             $em->flush();
@@ -93,6 +104,15 @@ class ProductController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            /**
+             * @var UploadedFile $file
+             */
+            $file=$editForm['pictureFile']->getData();
+            $fileName= md5(uniqid()).".".$file->guessExtension();
+            if($file){
+                $file->move($this->getParameter('product_image_directory'),$fileName);
+                $product->setPicture($fileName);
+            }
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('product_edit', array('id' => $product->getId()));

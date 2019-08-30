@@ -39,7 +39,14 @@
                                 {% for price in cutOrder.prices %}
                                     <tr>
 
-                                        <td>{{ price.product }}</td>
+                                        <td>
+                                            {% if price.product.picture is not null %}
+                                                <a href="{{ asset('uploads/products/images/' ~ price.product.picture) }}"
+                                                   data-toggle="lightbox">{{ price.product }}</a>
+                                            {% else %}
+                                                {{ price.product }}
+                                            {% endif %}
+                                        </td>
                                         <td>{{ price.material }}</td>
                                         <td>{{ price.quantity }}</td>
                                         <td>{{ price.price }}</td>
@@ -67,4 +74,10 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });
+    </script>
 {% endblock %}

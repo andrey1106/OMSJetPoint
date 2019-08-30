@@ -24,13 +24,18 @@
                         <th>Holes</th>
                         <td>{{ product.holes }}</td>
                     </tr>
-                    <tr>
-                        <th>Picture</th>
-                        <td>{{ product.picture }}</td>
-                    </tr>
+
                     <tr>
                         <th>Dateadded</th>
                         <td>{% if product.dateAdded %}{{ product.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Picture</th>
+                        <td>
+                            <a href="{{ asset('uploads/products/images/' ~ product.picture)}}" data-toggle="lightbox">
+                            <img src="{{ asset('uploads/products/images/' ~ product.picture)}}" alt="" style="width:200px;height:200px;">
+                            </a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -51,4 +56,10 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });
+    </script>
 {% endblock %}

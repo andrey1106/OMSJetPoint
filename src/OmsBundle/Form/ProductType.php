@@ -3,6 +3,7 @@
 namespace OmsBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,7 +17,10 @@ class ProductType extends AbstractType
         $builder->add('name')
                 ->add('lineCut')
                 ->add('holes')
-                ->add('picture');
+//                ->add('picture')
+                ->add('pictureFile',FileType::class,[
+                    'mapped' => false,
+                ]);
     }/**
      * {@inheritdoc}
      */

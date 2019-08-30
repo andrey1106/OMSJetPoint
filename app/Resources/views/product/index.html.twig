@@ -27,7 +27,13 @@
                             <td>{{ product.name }}</td>
                             <td>{{ product.lineCut }}</td>
                             <td>{{ product.holes }}</td>
-                            <td>{{ product.picture }}</td>
+                            <td>
+                                {% if product.picture is not null %}
+                                    <a href="{{ asset('uploads/products/images/' ~ product.picture) }}"
+                                       data-toggle="lightbox">Image</a>
+                                {% else %}
+                                    No Image
+                                {% endif %}</td>
                             <td>{% if product.dateAdded %}{{ product.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
                             <td>
                                 <ul>
@@ -52,6 +58,11 @@
             </div>
         </div>
     </div>
-
+    <script>
+        $(document).on('click', '[data-toggle="lightbox"]', function (event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });
+    </script>
 
 {% endblock %}
