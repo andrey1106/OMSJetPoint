@@ -3,9 +3,11 @@
 namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Company;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * Company controller.
@@ -17,8 +19,9 @@ class CompanyController extends Controller
     /**
      * Lists all company entities.
      *
-     * @Route("/", name="company_index")
-     * @Method("GET")
+     * @Route("/", name="company_index",methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function indexAction()
     {
@@ -34,8 +37,9 @@ class CompanyController extends Controller
     /**
      * Creates a new company entity.
      *
-     * @Route("/new", name="company_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="company_new",methods={"GET", "POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function newAction(Request $request)
     {
@@ -61,8 +65,9 @@ class CompanyController extends Controller
     /**
      * Finds and displays a company entity.
      *
-     * @Route("/{id}", name="company_show")
-     * @Method("GET")
+     * @Route("/{id}", name="company_show",methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function showAction(Company $company)
     {
@@ -77,8 +82,9 @@ class CompanyController extends Controller
     /**
      * Displays a form to edit an existing company entity.
      *
-     * @Route("/{id}/edit", name="company_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="company_edit",methods={"GET", "POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function editAction(Request $request, Company $company)
     {
@@ -102,8 +108,9 @@ class CompanyController extends Controller
     /**
      * Deletes a company entity.
      *
-     * @Route("/{id}", name="company_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="company_delete",methods={"DELETE"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function deleteAction(Request $request, Company $company)
     {
@@ -124,7 +131,7 @@ class CompanyController extends Controller
      *
      * @param Company $company The company entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface
      */
     private function createDeleteForm(Company $company)
     {

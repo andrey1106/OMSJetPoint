@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Contact
@@ -29,6 +30,9 @@ class Contact
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\NotBlank
+     * @Assert\Regex("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")
      */
     private $name;
 
@@ -36,6 +40,9 @@ class Contact
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=255)
+     *
+     * @Assert\NotBlank
+     * @Assert\Regex("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$")
      */
     private $phone;
 
@@ -43,6 +50,9 @@ class Contact
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
+     *
+     * @Assert\NotBlank
+     * @Assert\Regex("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
      */
     private $email;
 
@@ -50,6 +60,7 @@ class Contact
      * @var string|null
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     *
      */
     private $description;
 
@@ -75,7 +86,7 @@ class Contact
 
     public function __construct()
     {
-        $this->orders= new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     /**
@@ -240,7 +251,8 @@ class Contact
         $this->orders = $orders;
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         // to show the name of the Category in the select
         return $this->name;
         // to show the id of the Category in the select

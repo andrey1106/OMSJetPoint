@@ -32,9 +32,11 @@
                                     <li>
                                         <a href="{{ path('cutorder_show', { 'id': cutOrder.id }) }}">show</a>
                                     </li>
-                                    <li>
-                                        <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">edit</a>
-                                    </li>
+                                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                                        <li>
+                                            <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">edit</a>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             </td>
                         </tr>
@@ -43,9 +45,11 @@
                 </table>
 
                 <ul>
-                    <li>
-                        <a href="{{ path('cutorder_new') }}">Create a new cutOrder</a>
-                    </li>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                        <li>
+                            <a href="{{ path('cutorder_new') }}">Create a new cutOrder</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

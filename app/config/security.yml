@@ -27,6 +27,8 @@ security:
                 login_path: security_login
                 # Secure the login form against CSRF
                 # Reference: http://symfony.com/doc/current/cookbook/security/csrf_in_login_form.html
+                default_target_path: cutorder_index
+                always_use_default_target_path: true
                 csrf_token_generator: security.csrf.token_manager
 
             logout:
@@ -42,5 +44,6 @@ security:
     # additional security lives in the controllers
         - { path: '^/admin', roles: ROLE_ADMIN }
         - { path: '^/admin', roles: ROLE_ADMIN }
+        - { path: '^/price', roles: [ROLE_ADMIN, ROLE_USER]}
         - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: '^/', roles: [ROLE_ADMIN, ROLE_MANAGER, ROLE_GUEST] }
+        - { path: '^/', roles: [ROLE_ADMIN, ROLE_USER, ROLE_GUEST] }

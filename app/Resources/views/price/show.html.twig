@@ -5,18 +5,18 @@
 
     <table>
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ price.id }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ price.price }}</td>
-            </tr>
-            <tr>
-                <th>Quantity</th>
-                <td>{{ price.quantity }}</td>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <td>{{ price.id }}</td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>{{ price.price }}</td>
+        </tr>
+        <tr>
+            <th>Quantity</th>
+            <td>{{ price.quantity }}</td>
+        </tr>
         </tbody>
     </table>
 
@@ -24,13 +24,15 @@
         <li>
             <a href="{{ path('price_index') }}">Back to the list</a>
         </li>
-        <li>
-            <a href="{{ path('price_edit', { 'id': price.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+            <li>
+                <a href="{{ path('price_edit', { 'id': price.id }) }}">Edit</a>
+            </li>
+            <li>
+                {{ form_start(delete_form) }}
                 <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
+                {{ form_end(delete_form) }}
+            </li>
+        {% endif %}
     </ul>
 {% endblock %}

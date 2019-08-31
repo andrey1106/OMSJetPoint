@@ -4,6 +4,8 @@ namespace OmsBundle\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,9 +16,9 @@ class PriceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('price', null, ['label' => false,
+        $builder->add('price', NumberType::class, ['label' => false,
         ])
-            ->add('quantity', null, ['label' => false,])
+            ->add('quantity', IntegerType::class, ['label' => false,])
             ->add('product', EntityType::class, [
                 'class' => 'OmsBundle:Product',
                 'label' => false,

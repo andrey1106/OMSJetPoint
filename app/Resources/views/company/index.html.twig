@@ -9,12 +9,12 @@
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Companyid</th>
+                        <th>BULSTAT</th>
                         <th>Name</th>
                         <th>Address</th>
-                        <th>Responsibleperson</th>
-                        <th>Isvat</th>
-                        <th>Dateadded</th>
+                        <th>Responsible Person</th>
+                        <th>Is VAT</th>
+                        <th>Datea dded</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -33,9 +33,11 @@
                                     <li>
                                         <a href="{{ path('company_show', { 'id': company.id }) }}">show</a>
                                     </li>
-                                    <li>
-                                        <a href="{{ path('company_edit', { 'id': company.id }) }}">edit</a>
-                                    </li>
+                                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                                        <li>
+                                            <a href="{{ path('company_edit', { 'id': company.id }) }}">edit</a>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             </td>
                         </tr>
@@ -44,9 +46,11 @@
                 </table>
 
                 <ul>
-                    <li>
-                        <a href="{{ path('company_new') }}">Create a new company</a>
-                    </li>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                        <li>
+                            <a href="{{ path('company_new') }}">Create a new company</a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{{ path('contact_index') }}">List contacts</a>
                     </li>

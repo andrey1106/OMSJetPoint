@@ -15,7 +15,7 @@
                         <th>Email</th>
                         <th>Description</th>
                         <th>Company</th>
-                        <th>Dateadded</th>
+                        <th>Date added</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -34,9 +34,11 @@
                                     <li>
                                         <a href="{{ path('contact_show', { 'id': contact.id }) }}">show</a>
                                     </li>
-                                    <li>
-                                        <a href="{{ path('contact_edit', { 'id': contact.id }) }}">edit</a>
-                                    </li>
+                                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                                        <li>
+                                            <a href="{{ path('contact_edit', { 'id': contact.id }) }}">edit</a>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             </td>
                         </tr>
@@ -45,9 +47,11 @@
                 </table>
 
                 <ul>
-                    <li>
-                        <a href="{{ path('contact_new') }}">Create a new contact</a>
-                    </li>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                        <li>
+                            <a href="{{ path('contact_new') }}">Create a new contact</a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{{ path('company_index') }}">List companies</a>
                     </li>

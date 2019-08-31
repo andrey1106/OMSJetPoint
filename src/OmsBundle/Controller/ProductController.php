@@ -22,7 +22,7 @@ class ProductController extends Controller
      *
      * @Route("/", name="product_index",methods={"GET"})
      *
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function indexAction()
     {
@@ -54,10 +54,10 @@ class ProductController extends Controller
             /**
              * @var UploadedFile $file
              */
-            $file=$form['pictureFile']->getData();
-            $fileName= md5(uniqid()).".".$file->guessExtension();
-            if($file){
-                $file->move($this->getParameter('product_image_directory'),$fileName);
+            $file = $form['pictureFile']->getData();
+            $fileName = md5(uniqid()) . "." . $file->guessExtension();
+            if ($file) {
+                $file->move($this->getParameter('product_image_directory'), $fileName);
                 $product->setPicture($fileName);
             }
             $em = $this->getDoctrine()->getManager();
@@ -78,7 +78,7 @@ class ProductController extends Controller
      *
      * @Route("/{id}", name="product_show",methods={"GET"})
      *
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function showAction(Product $product)
     {
@@ -107,10 +107,10 @@ class ProductController extends Controller
             /**
              * @var UploadedFile $file
              */
-            $file=$editForm['pictureFile']->getData();
-            $fileName= md5(uniqid()).".".$file->guessExtension();
-            if($file){
-                $file->move($this->getParameter('product_image_directory'),$fileName);
+            $file = $editForm['pictureFile']->getData();
+            $fileName = md5(uniqid()) . "." . $file->guessExtension();
+            if ($file) {
+                $file->move($this->getParameter('product_image_directory'), $fileName);
                 $product->setPicture($fileName);
             }
             $this->getDoctrine()->getManager()->flush();
@@ -158,7 +158,6 @@ class ProductController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('product_delete', array('id' => $product->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

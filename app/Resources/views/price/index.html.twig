@@ -5,12 +5,12 @@
 
     <table>
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
         {% for price in prices %}
@@ -23,9 +23,11 @@
                         <li>
                             <a href="{{ path('price_show', { 'id': price.id }) }}">show</a>
                         </li>
-                        <li>
-                            <a href="{{ path('price_edit', { 'id': price.id }) }}">edit</a>
-                        </li>
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                            <li>
+                                <a href="{{ path('price_edit', { 'id': price.id }) }}">edit</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </td>
             </tr>
@@ -34,8 +36,10 @@
     </table>
 
     <ul>
-        <li>
-            <a href="{{ path('price_new') }}">Create a new price</a>
-        </li>
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+            <li>
+                <a href="{{ path('price_new') }}">Create a new price</a>
+            </li>
+        {% endif %}
     </ul>
 {% endblock %}

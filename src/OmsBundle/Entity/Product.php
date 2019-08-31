@@ -5,6 +5,7 @@ namespace OmsBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Product
@@ -27,6 +28,8 @@ class Product
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     *
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -34,6 +37,8 @@ class Product
      * @var string
      *
      * @ORM\Column(name="lineCut", type="decimal", precision=10, scale=2)
+     *
+     * @Assert\NotBlank
      */
     private $lineCut;
 
@@ -41,6 +46,8 @@ class Product
      * @var int
      *
      * @ORM\Column(name="holes", type="integer")
+     *
+     * @Assert\NotBlank
      */
     private $holes;
 

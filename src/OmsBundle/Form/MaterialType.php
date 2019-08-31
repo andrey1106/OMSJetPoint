@@ -3,6 +3,9 @@
 namespace OmsBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,10 +16,10 @@ class MaterialType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')
-                ->add('width')
-                ->add('cutSpeed')
-                ->add('drillingTime');
+        $builder->add('name',TextType::class,[])
+                ->add('width',NumberType::class,[])
+                ->add('cutSpeed',IntegerType::class,[])
+                ->add('drillingTime',NumberType::class,[]);
     }/**
      * {@inheritdoc}
      */

@@ -39,14 +39,16 @@
                     <li>
                         <a href="{{ path('material_index') }}">Back to the list</a>
                     </li>
-                    <li>
-                        <a href="{{ path('material_edit', { 'id': material.id }) }}">Edit</a>
-                    </li>
-                    <li>
-                        {{ form_start(delete_form) }}
-                        <input type="submit" value="Delete">
-                        {{ form_end(delete_form) }}
-                    </li>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                        <li>
+                            <a href="{{ path('material_edit', { 'id': material.id }) }}">Edit</a>
+                        </li>
+                        <li>
+                            {{ form_start(delete_form) }}
+                            <input type="submit" value="Delete">
+                            {{ form_end(delete_form) }}
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

@@ -21,7 +21,7 @@ class OrderStatusController extends Controller
      *
      * @Route("/", name="admin_orderstatus_index",methods={"GET"})
      *
-     * @Security("is_granted('ROLE_ADMIN') and is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function indexAction()
     {
@@ -67,6 +67,7 @@ class OrderStatusController extends Controller
      *
      * @Route("/{id}", name="admin_orderstatus_show",methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function showAction(OrderStatus $orderStatus)
     {

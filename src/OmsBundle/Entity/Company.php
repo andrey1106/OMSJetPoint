@@ -5,6 +5,7 @@ namespace OmsBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Company
@@ -27,6 +28,10 @@ class Company
      * @var int
      *
      * @ORM\Column(name="companyID", type="bigint", unique=true)
+     *
+     * @Assert\NotBlank
+     * @Assert\Regex("[0-9]")
+     *
      */
     private $companyID;
 
@@ -34,6 +39,8 @@ class Company
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     *
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -41,6 +48,9 @@ class Company
      * @var string
      *
      * @ORM\Column(name="Address", type="string", length=255)
+     *
+     * @Assert\NotBlank
+     * @Assert\Regex("[A-Za-z0-9'\.\-\s\,]")
      */
     private $address;
 
@@ -48,6 +58,9 @@ class Company
      * @var string
      *
      * @ORM\Column(name="responsiblePerson", type="string", length=255)
+     *
+     * @Assert\NotBlank
+     * @Assert\Regex("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")
      */
     private $responsiblePerson;
 
@@ -62,6 +75,7 @@ class Company
      * @var \DateTime
      *
      * @ORM\Column(name="dateAdded", type="datetime")
+     *
      */
     private $dateAdded;
 
@@ -269,7 +283,9 @@ class Company
     {
         $this->orders = $orders;
     }
-    public function __toString(){
+
+    public function __toString()
+    {
         // to show the name of the Category in the select
         return $this->name;
         // to show the id of the Category in the select

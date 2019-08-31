@@ -19,6 +19,7 @@ class PriceController extends Controller
      *
      * @Route("/", name="price_index",methods={"GET"})
      *
+     *
      */
     public function indexAction()
     {

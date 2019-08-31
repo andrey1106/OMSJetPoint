@@ -21,6 +21,7 @@ class MaterialController extends Controller
      *
      * @Route("/", name="material_index",methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function indexAction()
     {
@@ -66,6 +67,7 @@ class MaterialController extends Controller
      *
      * @Route("/{id}", name="material_show",methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function showAction(Material $material)
     {

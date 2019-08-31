@@ -40,9 +40,11 @@
                                     <li>
                                         <a href="{{ path('product_show', { 'id': product.id }) }}">show</a>
                                     </li>
-                                    <li>
-                                        <a href="{{ path('product_edit', { 'id': product.id }) }}">edit</a>
-                                    </li>
+                                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                                        <li>
+                                            <a href="{{ path('product_edit', { 'id': product.id }) }}">edit</a>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             </td>
                         </tr>
@@ -51,9 +53,11 @@
                 </table>
 
                 <ul>
-                    <li>
-                        <a href="{{ path('product_new') }}">Create a new product</a>
-                    </li>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                        <li>
+                            <a href="{{ path('product_new') }}">Create a new product</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

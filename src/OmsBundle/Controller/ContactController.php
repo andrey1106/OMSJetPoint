@@ -3,6 +3,8 @@
 namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Contact;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +22,7 @@ class ContactController extends Controller
      *
      * @Route("/", name="contact_index",methods={"GET"})
      *
+     *@Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function indexAction()
     {
@@ -37,6 +40,7 @@ class ContactController extends Controller
      *
      * @Route("/new/{companyid}", name="contact_new",methods={"GET", "POST"})
      *
+     *@Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function newAction(Request $request, $companyid = null)
     {
@@ -73,6 +77,7 @@ class ContactController extends Controller
      *
      * @Route("/{id}", name="contact_show",methods={"GET"})
      *
+     *@Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function showAction(Contact $contact)
     {
@@ -89,6 +94,7 @@ class ContactController extends Controller
      *
      * @Route("/{id}/edit", name="contact_edit",methods={"GET", "POST"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function editAction(Request $request, Contact $contact)
     {
@@ -114,6 +120,7 @@ class ContactController extends Controller
      *
      * @Route("/{id}", name="contact_delete",methods={"DELETE"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function deleteAction(Request $request, Contact $contact)
     {

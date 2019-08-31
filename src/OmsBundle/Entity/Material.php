@@ -5,6 +5,7 @@ namespace OmsBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Material
@@ -27,6 +28,8 @@ class Material
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -34,6 +37,8 @@ class Material
      * @var string
      *
      * @ORM\Column(name="width", type="decimal", precision=10, scale=2)
+     *
+     * @Assert\NotBlank
      */
     private $width;
 
@@ -41,6 +46,8 @@ class Material
      * @var int
      *
      * @ORM\Column(name="cutSpeed", type="integer")
+     *
+     * @Assert\NotBlank
      */
     private $cutSpeed;
 
@@ -48,6 +55,8 @@ class Material
      * @var string
      *
      * @ORM\Column(name="drillingTime", type="decimal", precision=10, scale=2)
+     *
+     * @Assert\NotBlank
      */
     private $drillingTime;
 
@@ -64,7 +73,8 @@ class Material
      */
     private $prices;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->prices = new ArrayCollection();
     }
 
@@ -214,7 +224,9 @@ class Material
     {
         $this->prices = $prices;
     }
-    public function __toString(){
+
+    public function __toString()
+    {
         // to show the name of the Category in the select
         return $this->name;
         // to show the id of the Category in the select

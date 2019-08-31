@@ -4,6 +4,7 @@ namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\CutOrder;
 use OmsBundle\Entity\Price;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,6 +22,7 @@ class CutOrderController extends Controller
      *
      * @Route("/", name="cutorder_index",methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function indexAction()
     {
@@ -38,6 +40,7 @@ class CutOrderController extends Controller
      *
      * @Route("/new", name="cutorder_new",methods={"GET", "POST"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function newAction(Request $request)
     {
@@ -73,6 +76,7 @@ class CutOrderController extends Controller
      *
      * @Route("/{id}", name="cutorder_show",methods={"GET"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function showAction(CutOrder $cutOrder)
     {
@@ -89,6 +93,7 @@ class CutOrderController extends Controller
      *
      * @Route("/{id}/edit", name="cutorder_edit",methods={"GET", "POST"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
     public function editAction(Request $request, CutOrder $cutOrder)
     {
@@ -124,6 +129,7 @@ class CutOrderController extends Controller
      *
      * @Route("/{id}", name="cutorder_delete",methods={"DELETE"})
      *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function deleteAction(Request $request, CutOrder $cutOrder)
     {

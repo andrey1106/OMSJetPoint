@@ -62,20 +62,22 @@
                     <li>
                         <a href="{{ path('cutorder_index') }}">Back to the list</a>
                     </li>
-                    <li>
-                        <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">Edit</a>
-                    </li>
-                    <li>
-                        {{ form_start(delete_form) }}
-                        <input type="submit" value="Delete">
-                        {{ form_end(delete_form) }}
-                    </li>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                        <li>
+                            <a href="{{ path('cutorder_edit', { 'id': cutOrder.id }) }}">Edit</a>
+                        </li>
+                        <li>
+                            {{ form_start(delete_form) }}
+                            <input type="submit" value="Delete">
+                            {{ form_end(delete_form) }}
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </div>
     <script>
-        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        $(document).on('click', '[data-toggle="lightbox"]', function (event) {
             event.preventDefault();
             $(this).ekkoLightbox();
         });
