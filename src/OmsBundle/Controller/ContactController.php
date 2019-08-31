@@ -4,10 +4,15 @@ namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Contact;
 
+use OmsBundle\Service\Companies\CompanyServiceInterface;
+use OmsBundle\Service\Contacts\ContactServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -18,52 +23,49 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContactController extends Controller
 {
     /**
+     * @var ContactServiceInterface
+     */
+    private $contactService;
+    private $companyService;
+
+    public function __construct(ContactServiceInterface $contactService, CompanyServiceInterface $companyService)
+    {
+        $this->contactService = $contactService;
+        $this->companyService = $companyService;
+    }
+
+    /**
      * Lists all contact entities.
      *
      * @Route("/", name="contact_index",methods={"GET"})
      *
-     *@Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $contacts = $em->getRepository('OmsBundle:Contact')->findAll();
-
         return $this->render('contact/index.html.twig', array(
-            'contacts' => $contacts,
+            'contacts' => $this->contactService->findAllContacts(),
         ));
     }
 
     /**
      * Creates a new contact entity.
      *
-     * @Route("/new/{companyid}", name="contact_new",methods={"GET", "POST"})
+     * @Route("/new/{companyid}", name="contact_new",methods={"GET"})
      *
-     *@Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param null $companyid
+     * @return Response
      */
-    public function newAction(Request $request, $companyid = null)
+    public function new($companyid = null)
     {
         $contact = new Contact();
         if ($companyid) {
-            $em = $this->getDoctrine()->getManager();
-            $company = $em->getRepository("OmsBundle:Company")->find($companyid);
-            $contact->setCompany($company);
+            $contact->setCompany($this->companyService->findOneCompanyByID($companyid));
         }
-
         $form = $this->createForm('OmsBundle\Form\ContactType', $contact);
         if ($companyid) {
             $form->remove('company');
-        }
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $contact->setDateAdded(new \DateTime());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($contact);
-            $em->flush();
-
-            return $this->redirectToRoute('contact_show', array('id' => $contact->getId()));
         }
 
         return $this->render('contact/new.html.twig', array(
@@ -73,19 +75,61 @@ class ContactController extends Controller
     }
 
     /**
+     * Creates a new contact entity.
+     *
+     * @Route("/new/{companyid}", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function newProcess(Request $request)
+    {
+        $contact = new Contact();
+        $form = $this->createForm('OmsBundle\Form\ContactType', $contact);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $contact->setDateAdded(new \DateTime());
+            $this->contactService->save($contact);
+        }
+        return $this->redirectToRoute('contact_show', array('id' => $contact->getId()));
+    }
+
+    /**
      * Finds and displays a contact entity.
      *
      * @Route("/{id}", name="contact_show",methods={"GET"})
      *
-     *@Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
+     * @param Contact $contact
+     * @return Response
      */
     public function showAction(Contact $contact)
     {
-        $deleteForm = $this->createDeleteForm($contact);
-
         return $this->render('contact/show.html.twig', array(
             'contact' => $contact,
-            'delete_form' => $deleteForm->createView(),
+            'delete_form' => $this->createDeleteForm($contact)->createView(),
+        ));
+    }
+
+    /**
+     * Displays a form to edit an existing contact entity.
+     *
+     * @Route("/{id}/edit", name="contact_edit",methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Contact $contact
+     *
+     * @return Response
+     */
+    public function edit(Contact $contact)
+    {
+        return $this->render('contact/edit.html.twig', array(
+            'contact' => $contact,
+            'edit_form' => $this->createForm('OmsBundle\Form\ContactType', $contact)->createView(),
+            'delete_form' => $this->createDeleteForm($contact)->createView(),
         ));
     }
 
@@ -95,24 +139,19 @@ class ContactController extends Controller
      * @Route("/{id}/edit", name="contact_edit",methods={"GET", "POST"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @param Contact $contact
+     * @return RedirectResponse
      */
-    public function editAction(Request $request, Contact $contact)
+    public function editProcess(Request $request, Contact $contact)
     {
-        $deleteForm = $this->createDeleteForm($contact);
         $editForm = $this->createForm('OmsBundle\Form\ContactType', $contact);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('contact_edit', array('id' => $contact->getId()));
+            $this->contactService->edit($contact);
         }
-
-        return $this->render('contact/edit.html.twig', array(
-            'contact' => $contact,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return $this->redirectToRoute('contact_edit', array('id' => $contact->getId()));
     }
 
     /**
@@ -121,6 +160,9 @@ class ContactController extends Controller
      * @Route("/{id}", name="contact_delete",methods={"DELETE"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @param Contact $contact
+     * @return RedirectResponse
      */
     public function deleteAction(Request $request, Contact $contact)
     {
@@ -128,9 +170,7 @@ class ContactController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($contact);
-            $em->flush();
+           $this->contactService->delete($contact);
         }
 
         return $this->redirectToRoute('contact_index');
@@ -141,7 +181,7 @@ class ContactController extends Controller
      *
      * @param Contact $contact The contact entity
      *
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      */
     private function createDeleteForm(Contact $contact)
     {

@@ -7,8 +7,11 @@ use OmsBundle\Service\Base\BaseServiceInterface;
 use OmsBundle\Service\Products\ProductServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -68,6 +71,9 @@ class ProductController extends Controller
      * @Route("/new", methods={"POST"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws \Exception
      */
     public function newProcess(Request $request)
     {
@@ -95,6 +101,8 @@ class ProductController extends Controller
      * @Route("/{id}", name="product_show",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
+     * @param Product $product
+     * @return Response
      */
     public function showAction(Product $product)
     {
@@ -112,6 +120,8 @@ class ProductController extends Controller
      * @Route("/{id}/edit", name="product_edit",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Product $product
+     * @return Response
      */
     public function edit(Product $product)
     {
@@ -130,6 +140,9 @@ class ProductController extends Controller
      * @Route("/{id}/edit", methods={"POST"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @param Product $product
+     * @return RedirectResponse
      */
     public function editProcess(Request $request, Product $product)
     {
@@ -155,6 +168,9 @@ class ProductController extends Controller
      * @Route("/{id}", name="product_delete",methods={"DELETE"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @param Product $product
+     * @return RedirectResponse
      */
     public function deleteAction(Request $request, Product $product)
     {
@@ -173,7 +189,7 @@ class ProductController extends Controller
      *
      * @param Product $product The product entity
      *
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      */
     private function createDeleteForm(Product $product)
     {

@@ -3,6 +3,7 @@
 namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Company;
+use OmsBundle\Service\Companies\CompanyServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class CompanyController extends Controller
 {
     /**
+     * @var CompanyServiceInterface
+     */
+    private $companyService;
+
+    public function __construct(CompanyServiceInterface $companyService)
+    {
+        $this->companyService = $companyService;
+    }
+
+    /**
      * Lists all company entities.
      *
      * @Route("/", name="company_index",methods={"GET"})
@@ -25,12 +36,8 @@ class CompanyController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $companies = $em->getRepository('OmsBundle:Company')->findAll();
-
         return $this->render('company/index.html.twig', array(
-            'companies' => $companies,
+            'companies' => $this->companyService->findAllCompanies(),
         ));
     }
 
@@ -138,7 +145,6 @@ class CompanyController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('company_delete', array('id' => $company->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }
