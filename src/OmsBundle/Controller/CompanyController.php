@@ -6,7 +6,10 @@ use OmsBundle\Entity\Company;
 use OmsBundle\Service\Companies\CompanyServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -44,11 +47,28 @@ class CompanyController extends Controller
     /**
      * Creates a new company entity.
      *
-     * @Route("/new", name="company_new",methods={"GET", "POST"})
+     * @Route("/new", name="company_new",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
-    public function newAction(Request $request)
+    public function new()
+    {
+        return $this->render('company/new.html.twig', array(
+            'form' => $this->createForm('OmsBundle\Form\CompanyType')->createView(),
+        ));
+    }
+
+    /**
+     * Creates a new company entity.
+     *
+     * @Route("/new", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function newProcess(Request $request)
     {
         $company = new Company();
         $form = $this->createForm('OmsBundle\Form\CompanyType', $company);
@@ -56,17 +76,9 @@ class CompanyController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $company->setDateAdded(new \DateTime());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($company);
-            $em->flush();
-
-            return $this->redirectToRoute('company_show', array('id' => $company->getId()));
+            $this->companyService->save($company);
         }
-
-        return $this->render('company/new.html.twig', array(
-            'company' => $company,
-            'form' => $form->createView(),
-        ));
+        return $this->redirectToRoute('company_show', array('id' => $company->getId()));
     }
 
     /**
@@ -75,41 +87,53 @@ class CompanyController extends Controller
      * @Route("/{id}", name="company_show",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
+     * @param Company $company
+     * @return Response
      */
     public function showAction(Company $company)
     {
-        $deleteForm = $this->createDeleteForm($company);
-
         return $this->render('company/show.html.twig', array(
             'company' => $company,
-            'delete_form' => $deleteForm->createView(),
+            'delete_form' => $this->createDeleteForm($company)->createView(),
         ));
     }
 
     /**
      * Displays a form to edit an existing company entity.
      *
-     * @Route("/{id}/edit", name="company_edit",methods={"GET", "POST"})
+     * @Route("/{id}/edit", name="company_edit",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Company $company
+     * @return Response
      */
-    public function editAction(Request $request, Company $company)
+    public function edit(Company $company)
     {
-        $deleteForm = $this->createDeleteForm($company);
+        return $this->render('company/edit.html.twig', array(
+            'company'=>$company,
+            'edit_form' => $this->createForm('OmsBundle\Form\CompanyType', $company)->createView(),
+            'delete_form' => $this->createDeleteForm($company)->createView(),
+        ));
+    }
+
+    /**
+     * Displays a form to edit an existing company entity.
+     *
+     * @Route("/{id}/edit", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @param Company $company
+     * @return RedirectResponse
+     */
+    public function editProcess(Request $request, Company $company)
+    {
         $editForm = $this->createForm('OmsBundle\Form\CompanyType', $company);
         $editForm->handleRequest($request);
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('company_edit', array('id' => $company->getId()));
+            $this->companyService->edit($company);
         }
-
-        return $this->render('company/edit.html.twig', array(
-            'company' => $company,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return $this->redirectToRoute('company_edit', array('id' => $company->getId()));
     }
 
     /**
@@ -118,6 +142,9 @@ class CompanyController extends Controller
      * @Route("/{id}", name="company_delete",methods={"DELETE"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @param Company $company
+     * @return RedirectResponse
      */
     public function deleteAction(Request $request, Company $company)
     {
@@ -125,9 +152,7 @@ class CompanyController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($company);
-            $em->flush();
+            $this->companyService->delete($company);
         }
 
         return $this->redirectToRoute('company_index');
@@ -138,7 +163,7 @@ class CompanyController extends Controller
      *
      * @param Company $company The company entity
      *
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      */
     private function createDeleteForm(Company $company)
     {

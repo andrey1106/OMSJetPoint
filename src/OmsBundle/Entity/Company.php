@@ -29,8 +29,6 @@ class Company
      *
      * @ORM\Column(name="companyID", type="bigint", unique=true)
      *
-     * @Assert\NotBlank
-     * @Assert\Regex("[0-9]")
      *
      */
     private $companyID;
@@ -40,7 +38,6 @@ class Company
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      *
-     * @Assert\NotBlank
      */
     private $name;
 
@@ -49,8 +46,6 @@ class Company
      *
      * @ORM\Column(name="Address", type="string", length=255)
      *
-     * @Assert\NotBlank
-     * @Assert\Regex("[A-Za-z0-9'\.\-\s\,]")
      */
     private $address;
 
@@ -59,8 +54,6 @@ class Company
      *
      * @ORM\Column(name="responsiblePerson", type="string", length=255)
      *
-     * @Assert\NotBlank
-     * @Assert\Regex("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")
      */
     private $responsiblePerson;
 
