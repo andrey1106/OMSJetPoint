@@ -3,6 +3,8 @@
 namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Product;
+use OmsBundle\Service\Base\BaseServiceInterface;
+use OmsBundle\Service\Products\ProductServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -18,6 +20,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends Controller
 {
     /**
+     * @var ProductServiceInterface
+     */
+    private $productService;
+
+    /**
+     * ProductController constructor.
+     * @param ProductServiceInterface $productService
+     *
+     */
+    public function __construct(ProductServiceInterface $productService)
+    {
+        $this->productService = $productService;
+    }
+
+    /**
      * Lists all product entities.
      *
      * @Route("/", name="product_index",methods={"GET"})
@@ -26,53 +43,51 @@ class ProductController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $products = $em->getRepository('OmsBundle:Product')->findAll();
-
         return $this->render('product/index.html.twig', array(
-            'products' => $products,
+            'products' => $this->productService->findAllProducts(),
+        ));
+    }
+
+    /**
+     * Creates a new product GET.
+     *
+     * @Route("/new", name="product_new",methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     */
+    public function new()
+    {
+        return $this->render('product/new.html.twig', array(
+            'form' => $this->createForm('OmsBundle\Form\ProductType')->createView(),
         ));
     }
 
     /**
      * Creates a new product entity.
      *
-     * @Route("/new", name="product_new",methods={"GET", "POST"})
+     * @Route("/new", methods={"POST"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
-    public function newAction(Request $request)
+    public function newProcess(Request $request)
     {
         $product = new Product();
         $form = $this->createForm('OmsBundle\Form\ProductType', $product);
         $form->handleRequest($request);
+        $product->setDateAdded(new \DateTime());
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $product->setDateAdded(new \DateTime());
-
-            /**
-             * @var UploadedFile $file
-             */
-            $file = $form['pictureFile']->getData();
-
-            if ($file) {
-                $fileName = md5(uniqid()) . "." . $file->guessExtension();
-                $file->move($this->getParameter('product_image_directory'), $fileName);
-                $product->setPicture($fileName);
-            }
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($product);
-            $em->flush();
-
-            return $this->redirectToRoute('product_show', array('id' => $product->getId()));
+        /**
+         * @var UploadedFile $file
+         */
+        $file = $form['pictureFile']->getData();
+        if ($file) {
+            $product = $this->productService->uploadImage($product, $file);
         }
+        $this->productService->save($product);
 
-        return $this->render('product/new.html.twig', array(
-            'product' => $product,
-            'form' => $form->createView(),
-        ));
+        return $this->redirectToRoute('product_show', array('id' => $product->getId()));
     }
+
 
     /**
      * Finds and displays a product entity.
@@ -94,38 +109,45 @@ class ProductController extends Controller
     /**
      * Displays a form to edit an existing product entity.
      *
-     * @Route("/{id}/edit", name="product_edit",methods={"GET", "POST"})
+     * @Route("/{id}/edit", name="product_edit",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      */
-    public function editAction(Request $request, Product $product)
+    public function edit(Product $product)
     {
         $deleteForm = $this->createDeleteForm($product);
+
+        return $this->render('product/edit.html.twig', array(
+            'product' => $product,
+            'edit_form' => $this->createForm('OmsBundle\Form\ProductType', $product)->createView(),
+            'delete_form' => $deleteForm->createView(),
+        ));
+    }
+
+    /**
+     * Displays a form to edit an existing product entity.
+     *
+     * @Route("/{id}/edit", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     */
+    public function editProcess(Request $request, Product $product)
+    {
         $editForm = $this->createForm('OmsBundle\Form\ProductType', $product);
         $editForm->handleRequest($request);
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             /**
              * @var UploadedFile $file
              */
             $file = $editForm['pictureFile']->getData();
-
             if ($file) {
-                $fileName = md5(uniqid()) . "." . $file->guessExtension();
-                $file->move($this->getParameter('product_image_directory'), $fileName);
-                $product->setPicture($fileName);
+                $product = $this->productService->uploadImage($product, $file);
             }
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('product_edit', array('id' => $product->getId()));
+            $this->productService->edit($product);
         }
-
-        return $this->render('product/edit.html.twig', array(
-            'product' => $product,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return $this->redirectToRoute('product_edit', array('id' => $product->getId()));
     }
+
 
     /**
      * Deletes a product entity.
@@ -140,9 +162,7 @@ class ProductController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($product);
-            $em->flush();
+            $this->productService->delete($product);
         }
 
         return $this->redirectToRoute('product_index');
