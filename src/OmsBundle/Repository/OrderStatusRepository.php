@@ -2,6 +2,12 @@
 
 namespace OmsBundle\Repository;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use OmsBundle\Entity\OrderStatus;
+
 /**
  * OrderStatusRepository
  *
@@ -10,4 +16,55 @@ namespace OmsBundle\Repository;
  */
 class OrderStatusRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function __construct(EntityManagerInterface $em,
+                                Mapping\ClassMetadata $metaData = null)
+    {
+        parent::__construct($em,
+            $metaData == null ?
+                new Mapping\ClassMetadata(OrderStatus::class) :
+                $metaData
+        );
+    }
+
+    /**
+     * @param OrderStatus $orderStatus
+     * @throws ORMException
+     */
+    public function insert(OrderStatus $orderStatus)
+    {
+        try {
+            $this->_em->persist($orderStatus);
+            $this->_em->flush();
+        } catch (OptimisticLockException $e) {
+
+        }
+    }
+
+    /**
+     * @param OrderStatus $orderStatus
+     * @throws ORMException
+     */
+    public function update(OrderStatus $orderStatus)
+    {
+        try {
+            $this->_em->merge($orderStatus);
+            $this->_em->flush();
+        } catch (OptimisticLockException $e) {
+
+        }
+    }
+
+    /**
+     * @param OrderStatus $orderStatus
+     * @throws ORMException
+     */
+    public function remove(OrderStatus $orderStatus)
+    {
+        try {
+            $this->_em->remove($orderStatus);
+            $this->_em->flush();
+        } catch (OptimisticLockException $e) {
+
+        }
+    }
 }

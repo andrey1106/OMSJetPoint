@@ -38,8 +38,6 @@ class UserService implements UserServiceInterface
         $passwordHash =
             $this->encryptionService->hash($user->getPassword());
         $user->setPassword($passwordHash);
-       // $userRole = $this->roleService->findOneBy('ROLE_USER');
-      //  $user->addRole($userRole);
         return $this->userRespository->insert($user);
     }
 

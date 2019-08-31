@@ -2,7 +2,12 @@
 
 namespace OmsBundle\Repository;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use OmsBundle\Entity\Material;
 
 /**
  * MaterialRepository
@@ -12,4 +17,56 @@ use Doctrine\ORM\EntityRepository;
  */
 class MaterialRepository extends EntityRepository
 {
+    public function __construct(EntityManagerInterface $em,
+                                Mapping\ClassMetadata $metaData = null)
+    {
+        parent::__construct($em,
+            $metaData == null ?
+                new Mapping\ClassMetadata(Material::class) :
+                $metaData
+        );
+    }
+
+    /**
+     * @param Material $material
+     * @throws ORMException
+     */
+    public function insert(Material $material)
+    {
+        try {
+            $this->_em->persist($material);
+            $this->_em->flush();
+        } catch (OptimisticLockException $e) {
+
+        }
+    }
+
+    /**
+     * @param Material $material
+     * @throws ORMException
+     */
+    public function update(Material $material)
+    {
+        try {
+            $this->_em->merge($material);
+            $this->_em->flush();
+        } catch (OptimisticLockException $e) {
+
+        }
+    }
+
+    /**
+     * @param Material $material
+     * @throws ORMException
+     */
+    public function remove(Material $material)
+    {
+        try {
+            $this->_em->remove($material);
+            $this->_em->flush();
+        } catch (OptimisticLockException $e) {
+
+        }
+    }
+
 }

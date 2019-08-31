@@ -22,6 +22,7 @@ class ProductType extends AbstractType
                 ->add('holes',IntegerType::class,[])
                 ->add('pictureFile',FileType::class,[
                     'mapped' => false,
+                    'required' => false,
                 ]);
     }/**
      * {@inheritdoc}

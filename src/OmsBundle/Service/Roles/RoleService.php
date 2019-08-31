@@ -23,12 +23,21 @@ class RoleService implements RoleServiceInteface
         $this->roleRepository = $roleRepository;
     }
 
+    /**
+     * @param string $criteria
+     * @return bool|mixed
+     */
     public function findOneBy(string $criteria)
     {
         return true;
 
     }
 
+    /**
+     * @param Role $role
+     * @return bool
+     * @throws \Exception
+     */
     public function saveRole(Role $role): bool
     {
         $role->setRole("ROLE_".strtoupper($role->getRole()));
@@ -37,6 +46,9 @@ class RoleService implements RoleServiceInteface
         return $this->roleRepository->insert($role);
     }
 
+    /**
+     * @return array|mixed
+     */
     public function findAllRoles()
     {
         $stringRoles = [];
@@ -51,6 +63,10 @@ class RoleService implements RoleServiceInteface
 
     }
 
+    /**
+     * @param array $rolesArray
+     * @return array|mixed
+     */
     public function findRolesByArr($rolesArray)
     {
         return $this->roleRepository->findBy($rolesArray);

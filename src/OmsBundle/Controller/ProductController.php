@@ -55,8 +55,9 @@ class ProductController extends Controller
              * @var UploadedFile $file
              */
             $file = $form['pictureFile']->getData();
-            $fileName = md5(uniqid()) . "." . $file->guessExtension();
+
             if ($file) {
+                $fileName = md5(uniqid()) . "." . $file->guessExtension();
                 $file->move($this->getParameter('product_image_directory'), $fileName);
                 $product->setPicture($fileName);
             }
@@ -108,8 +109,9 @@ class ProductController extends Controller
              * @var UploadedFile $file
              */
             $file = $editForm['pictureFile']->getData();
-            $fileName = md5(uniqid()) . "." . $file->guessExtension();
+
             if ($file) {
+                $fileName = md5(uniqid()) . "." . $file->guessExtension();
                 $file->move($this->getParameter('product_image_directory'), $fileName);
                 $product->setPicture($fileName);
             }

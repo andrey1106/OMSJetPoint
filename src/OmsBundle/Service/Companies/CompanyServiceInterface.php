@@ -8,6 +8,7 @@ use OmsBundle\Entity\Company;
 
 interface CompanyServiceInterface
 {
-
-
+    public function save(Company $company);
+    public function edit(Company $company);
+    public function delete(Company $company);
 }
