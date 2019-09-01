@@ -21,6 +21,18 @@ interface RoleServiceInteface
     public function saveRole (Role $role) : bool;
 
     /**
+     * @param Role $role
+     * @return mixed
+     */
+    public function edit(Role $role);
+
+    /**
+     * @param Role $role
+     * @return mixed
+     */
+    public function delete(Role $role);
+
+    /**
      * @return mixed
      */
     public function findAllRoles();

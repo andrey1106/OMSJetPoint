@@ -51,16 +51,7 @@ class RoleService implements RoleServiceInteface
      */
     public function findAllRoles()
     {
-        $stringRoles = [];
-
-        foreach ($this->roleRepository->findAll() as $role) {
-            /**
-             * @var $role Role
-             */
-            $stringRoles[ $role->getRole()] = $role->getId();
-        }
-        return $stringRoles;
-
+        return $this->roleRepository->findAll();
     }
 
     /**
@@ -70,5 +61,23 @@ class RoleService implements RoleServiceInteface
     public function findRolesByArr($rolesArray)
     {
         return $this->roleRepository->findBy($rolesArray);
+    }
+
+    /**
+     * @param Role $role
+     * @return mixed
+     */
+    public function edit(Role $role)
+    {
+      return  $this->roleRepository->update($role);
+    }
+
+    /**
+     * @param Role $role
+     * @return mixed
+     */
+    public function delete(Role $role)
+    {
+        return $this->roleRepository->remove($role);
     }
 }

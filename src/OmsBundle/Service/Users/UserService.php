@@ -6,7 +6,7 @@ namespace OmsBundle\Service\Users;
 
 use OmsBundle\Entity\User;
 use OmsBundle\Repository\UserRepository;
-use OmsBundle\Service\Encryiption\ArgonService;
+use OmsBundle\Service\Encryiption\BCryptService;
 use OmsBundle\Service\Roles\RoleServiceInteface;
 use Symfony\Component\Security\Core\Security;
 
@@ -15,17 +15,17 @@ class UserService implements UserServiceInterface
 {
     private $security;
     private $encryptionService;
-    private $userRespository;
+    private $userRepository;
     private $roleService;
 
     public function __construct(Security $security,
-                                ArgonService $encryptionService,
+                                BCryptService $encryptionService,
                                 UserRepository $userRepository,
                                 RoleServiceInteface $roleService)
     {
         $this->security = $security;
         $this->encryptionService = $encryptionService;
-        $this->userRespository = $userRepository;
+        $this->userRepository = $userRepository;
         $this->roleService = $roleService;
     }
 
@@ -38,7 +38,7 @@ class UserService implements UserServiceInterface
         $passwordHash =
             $this->encryptionService->hash($user->getPassword());
         $user->setPassword($passwordHash);
-        return $this->userRespository->insert($user);
+        return $this->userRepository->insert($user);
     }
 
     /**
@@ -47,7 +47,7 @@ class UserService implements UserServiceInterface
      */
     public function findOneById(int $id): ?User
     {
-        return $this->userRespository->find($id);
+        return $this->userRepository->find($id);
     }
 
     /**
@@ -56,7 +56,7 @@ class UserService implements UserServiceInterface
      */
     public function findOne(User $user): ?User
     {
-        return $this->userRespository->find($user);
+        return $this->userRepository->find($user);
     }
 
 
@@ -66,5 +66,20 @@ class UserService implements UserServiceInterface
     public function currentUser(): ?User
     {
         return $this->security->getUser();
+    }
+
+    public function edit(User $user)
+    {
+        return $this->userRepository->update($user);
+    }
+
+    public function delete(User $user)
+    {
+        return $this->userRepository->remove($user);
+    }
+
+    public function findAllUsers()
+    {
+        return $this->userRepository->findAll();
     }
 }

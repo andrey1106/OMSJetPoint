@@ -31,8 +31,6 @@ class Contact
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Assert\NotBlank
-     * @Assert\Regex("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")
      */
     private $name;
 
@@ -41,8 +39,6 @@ class Contact
      *
      * @ORM\Column(name="phone", type="string", length=255)
      *
-     * @Assert\NotBlank
-     * @Assert\Regex("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$")
      */
     private $phone;
 
@@ -51,8 +47,6 @@ class Contact
      *
      * @ORM\Column(name="email", type="string", length=255)
      *
-     * @Assert\NotBlank
-     * @Assert\Regex("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
      */
     private $email;
 
@@ -250,14 +244,5 @@ class Contact
     {
         $this->orders = $orders;
     }
-
-    public function __toString()
-    {
-        // to show the name of the Category in the select
-        return $this->name;
-        // to show the id of the Category in the select
-        // return $this->id;
-    }
-
 
 }

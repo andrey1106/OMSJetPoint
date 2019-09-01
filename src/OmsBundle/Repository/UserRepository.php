@@ -21,11 +21,15 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     {
         parent::__construct($em,
             $metaData == null ?
-                new Mapping\ClassMetadata(\SoftUniBlogBundle\Entity\User::class) :
+                new Mapping\ClassMetadata(User::class) :
                 $metaData
         );
     }
 
+    /**
+     * @param User $user
+     * @return bool
+     */
     public function insert(User $user)
     {
 
@@ -39,4 +43,33 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         }
 
     }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function update(User $user){
+        try {
+            $this->_em->merge($user);
+            $this->_em->flush();
+            return true;
+        } catch (ORMException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function remove(User $user){
+        try {
+            $this->_em->remove($user);
+            $this->_em->flush();
+            return true;
+        } catch (ORMException $e) {
+            return false;
+        }
+    }
+
 }

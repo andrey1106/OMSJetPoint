@@ -18,7 +18,7 @@
        <td>{{ form_row(form.prices.vars.prototype.product)|e }}</td>
        <td>{{ form_row(form.prices.vars.prototype.material)|e }}</td>
        <td>{{ form_row(form.prices.vars.prototype.quantity)|e }}</td>
-       <td>{{ form_row(form.prices.vars.prototype.price)|e }}</td>
+{#       <td>{{ form_row(form.prices.vars.prototype.price)|e }}</td>#}
        ">
         <tr>
             <th>Product</th>
@@ -33,7 +33,7 @@
                 <td>{{ form_row(price.material) }}</td>
                 {#                <td>{{ form_row(price.order) }}</td>#}
                 <td>{{ form_row(price.quantity) }}</td>
-                <td>{{ form_row(price.price) }}</td>
+{#                <td>{{ form_row(price.price) }}</td>#}
             </tr>
         {% endfor %}
 

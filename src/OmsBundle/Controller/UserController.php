@@ -5,9 +5,13 @@ namespace OmsBundle\Controller;
 use OmsBundle\Entity\Role;
 use OmsBundle\Entity\User;
 use OmsBundle\Service\Roles\RoleServiceInteface;
+use OmsBundle\Service\Users\UserServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -20,48 +24,61 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends Controller
 {
     /**
+     * @var UserServiceInterface
+     */
+    private $userService;
+
+    public function __construct(UserServiceInterface $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    /**
      * Lists all user entities.
      *
      * @Route("/", name="user_index", methods={"GET"})
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $users = $em->getRepository('OmsBundle:User')->findAll();
-
         return $this->render('user/index.html.twig', array(
-            'users' => $users,
+            'users' => $this->userService->findAllUsers(),
         ));
     }
 
     /**
      * Creates a new user entity.
      *
-     * @Route("/new", name="user_new", methods={"GET", "POST"})
+     * @Route("/new", name="user_new", methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN')")
      */
-    public function newAction(Request $request)
+    public function new()
+    {
+        return $this->render('user/new.html.twig', array(
+            'form' => $this->createForm('OmsBundle\Form\UserType')->createView(),
+        ));
+    }
+
+    /**
+     * Creates a new user entity.
+     *
+     * @Route("/new", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function newProcess(Request $request)
     {
         $user = new User ();
         $form = $this->createForm('OmsBundle\Form\UserType', $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(password_hash($user->getPassword(), PASSWORD_BCRYPT));
-            $user->setDateAdded(new \DateTime());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirectToRoute('user_show', array('id' => $user->getId()));
+           $user->setDateAdded(new \DateTime());
+            $this->userService->save($user);
         }
-
-        return $this->render('user/new.html.twig', array(
-            'user' => $user,
-            'form' => $form->createView(),
-        ));
+        return $this->redirectToRoute('user_show', array('id' => $user->getId()));
     }
 
     /**
@@ -70,43 +87,54 @@ class UserController extends Controller
      * @Route("/{id}", name="user_show", methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN')")
+     * @param User $user
+     * @return Response
      */
     public function showAction(User $user)
     {
-        $deleteForm = $this->createDeleteForm($user);
-        $user->getRoles();
         return $this->render('user/show.html.twig', array(
             'user' => $user,
-            'delete_form' => $deleteForm->createView(),
+            'delete_form' => $this->createDeleteForm($user)->createView(),
         ));
     }
 
     /**
      * Displays a form to edit an existing user entity.
      *
-     * @Route("/{id}/edit", name="user_edit",methods={"GET", "POST"})
+     * @Route("/{id}/edit", name="user_edit",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN')")
+     * @param User $user
+     * @return Response
      */
-    public function editAction(Request $request, User $user)
+    public function edit(User $user)
     {
-        $deleteForm = $this->createDeleteForm($user);
-        $editForm = $this->createForm('OmsBundle\Form\UserType', $user);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('user_edit', array('id' => $user->getId()));
-        }
-
         return $this->render('user/edit.html.twig', array(
             'user' => $user,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'edit_form' => $this->createForm('OmsBundle\Form\UserType', $user)->createView(),
+            'delete_form' => $this->createDeleteForm($user)->createView(),
 
         ));
+    }
+
+    /**
+     * Displays a form to edit an existing user entity.
+     *
+     * @Route("/{id}/edit", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     */
+    public function editProcess(Request $request, User $user)
+    {
+        $editForm = $this->createForm('OmsBundle\Form\UserType', $user);
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->userService->edit($user);
+           }
+        return $this->redirectToRoute('user_edit', array('id' => $user->getId()));
     }
 
     /**
@@ -115,6 +143,9 @@ class UserController extends Controller
      * @Route("/{id}", name="user_delete",methods={"DELETE"})
      *
      * @Security("is_granted('ROLE_ADMIN')")
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
      */
     public function deleteAction(Request $request, User $user)
     {
@@ -122,9 +153,7 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($user);
-            $em->flush();
+           $this->userService->delete($user);
         }
 
         return $this->redirectToRoute('user_index');
@@ -135,14 +164,13 @@ class UserController extends Controller
      *
      * @param User $user The user entity
      *
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      */
     private function createDeleteForm(User $user)
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('user_delete', array('id' => $user->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

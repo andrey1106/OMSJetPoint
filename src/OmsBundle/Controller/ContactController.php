@@ -2,6 +2,7 @@
 
 namespace OmsBundle\Controller;
 
+use OmsBundle\Entity\Company;
 use OmsBundle\Entity\Contact;
 
 use OmsBundle\Service\Companies\CompanyServiceInterface;
@@ -9,6 +10,7 @@ use OmsBundle\Service\Contacts\ContactServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,7 +63,8 @@ class ContactController extends Controller
     {
         $contact = new Contact();
         if ($companyid) {
-            $contact->setCompany($this->companyService->findOneCompanyByID($companyid));
+            $company = $this->companyService->findOneCompanyByID($companyid);
+            $contact->setCompany($company);
         }
         $form = $this->createForm('OmsBundle\Form\ContactType', $contact);
         if ($companyid) {
@@ -84,14 +87,21 @@ class ContactController extends Controller
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function newProcess(Request $request)
+    public function newProcess(Request $request, $companyid = null)
     {
         $contact = new Contact();
+
         $form = $this->createForm('OmsBundle\Form\ContactType', $contact);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($companyid) {
+                $company = $this->companyService->findOneCompanyByID($companyid);
+              } else {
+                $company = $this->companyService->findOneCompanyByID($contact->getCompany());
+            }
             $contact->setDateAdded(new \DateTime());
+            $contact->setCompany($company);
             $this->contactService->save($contact);
         }
         return $this->redirectToRoute('contact_show', array('id' => $contact->getId()));
@@ -170,7 +180,7 @@ class ContactController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-           $this->contactService->delete($contact);
+            $this->contactService->delete($contact);
         }
 
         return $this->redirectToRoute('contact_index');

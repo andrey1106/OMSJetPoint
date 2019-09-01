@@ -4,10 +4,15 @@ namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\CutOrder;
 use OmsBundle\Entity\Price;
+use OmsBundle\Service\CutOrders\CutOrderServiceInterface;
+use OmsBundle\Service\Prices\PriceServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function MongoDB\BSON\fromJSON;
 
 
 /**
@@ -17,6 +22,15 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CutOrderController extends Controller
 {
+    private $cutOrderService;
+    private $priceService;
+
+    public function __construct(CutOrderServiceInterface $cutOrderService,PriceServiceInterface $priceService)
+    {
+        $this->cutOrderService = $cutOrderService;
+        $this->priceService=$priceService;
+    }
+
     /**
      * Lists all cutOrder entities.
      *
@@ -26,12 +40,8 @@ class CutOrderController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $cutOrders = $em->getRepository('OmsBundle:CutOrder')->findAll();
-
         return $this->render('cutorder/index.html.twig', array(
-            'cutOrders' => $cutOrders,
+            'cutOrders' => $this->cutOrderService->findAllOrders(),
         ));
     }
 
@@ -41,6 +51,9 @@ class CutOrderController extends Controller
      * @Route("/new", name="cutorder_new",methods={"GET", "POST"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @return RedirectResponse|Response
+     * @throws \Exception
      */
     public function newAction(Request $request)
     {
@@ -55,13 +68,13 @@ class CutOrderController extends Controller
             $totalPriceNoVAT = 0;
             foreach ($formData as $recordPrice) {
                 $recordPrice->setOrder($cutOrder);
+                $recordPrice=$this->priceService->calcPrice($recordPrice);
                 $totalPriceNoVAT = $totalPriceNoVAT + $recordPrice->getPrice();
                 $em->persist($recordPrice);
             }
             $cutOrder->setTotalNoVAT($totalPriceNoVAT);
             $em->persist($cutOrder);
             $em->flush();
-           // return $this->render('default/dump.html.twig', ['dump' => $dump]);
             return $this->redirectToRoute('cutorder_show', array('id' => $cutOrder->getId()));
         }
 
@@ -71,12 +84,15 @@ class CutOrderController extends Controller
         ));
     }
 
+
     /**
      * Finds and displays a cutOrder entity.
      *
      * @Route("/{id}", name="cutorder_show",methods={"GET"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
+     * @param CutOrder $cutOrder
+     * @return Response
      */
     public function showAction(CutOrder $cutOrder)
     {
@@ -94,6 +110,9 @@ class CutOrderController extends Controller
      * @Route("/{id}/edit", name="cutorder_edit",methods={"GET", "POST"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
+     * @param Request $request
+     * @param CutOrder $cutOrder
+     * @return RedirectResponse|Response
      */
     public function editAction(Request $request, CutOrder $cutOrder)
     {
@@ -107,6 +126,7 @@ class CutOrderController extends Controller
             $totalPriceNoVAT = 0;
             foreach ($editFormData as $recordPrice) {
                 $recordPrice->setOrder($cutOrder);
+                $recordPrice=$this->priceService->calcPrice($recordPrice);
                 $totalPriceNoVAT = $totalPriceNoVAT + $recordPrice->getPrice();
                 $em->persist($recordPrice);
             }
@@ -114,7 +134,7 @@ class CutOrderController extends Controller
             $em->persist($cutOrder);
             $em->flush();
 
-                        return $this->redirectToRoute('cutorder_edit', array('id' => $cutOrder->getId()));
+            return $this->redirectToRoute('cutorder_edit', array('id' => $cutOrder->getId()));
         }
 
         return $this->render('cutorder/edit.html.twig', array(
@@ -130,6 +150,9 @@ class CutOrderController extends Controller
      * @Route("/{id}", name="cutorder_delete",methods={"DELETE"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_GUEST')")
+     * @param Request $request
+     * @param CutOrder $cutOrder
+     * @return RedirectResponse
      */
     public function deleteAction(Request $request, CutOrder $cutOrder)
     {
@@ -138,6 +161,9 @@ class CutOrderController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            foreach ($cutOrder->getPrices() as $price){
+                $em->remove($price);
+            }
             $em->remove($cutOrder);
             $em->flush();
         }

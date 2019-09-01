@@ -16,8 +16,8 @@ class PriceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('price', NumberType::class, ['label' => false,
-        ])
+        $builder
+//            ->add('price', NumberType::class, ['label' => false,])
             ->add('quantity', IntegerType::class, ['label' => false,])
             ->add('product', EntityType::class, [
                 'class' => 'OmsBundle:Product',

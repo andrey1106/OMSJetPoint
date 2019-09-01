@@ -4,23 +4,53 @@
 namespace OmsBundle\Service\CutOrders;
 
 
+use Doctrine\ORM\ORMException;
 use OmsBundle\Entity\CutOrder;
+use OmsBundle\Repository\CutOrderRepository;
 
 class CutOrderService implements CutOrderServiceInterface
 {
+    /**
+     * @var CutOrderRepository
+     */
+    private $curOrderRepository;
+    public function __construct(CutOrderRepository $curOrderRepository)
+    {
+        $this->curOrderRepository=$curOrderRepository;
+    }
 
+    /**
+     * @param CutOrder $cutOrder
+     * @throws ORMException
+     */
     public function save(CutOrder $cutOrder)
     {
-        // TODO: Implement save() method.
+        return $this->curOrderRepository->insert($cutOrder);
     }
 
+    /**
+     * @param CutOrder $cutOrder
+     * @throws ORMException
+     */
     public function edit(CutOrder $cutOrder)
     {
-        // TODO: Implement edit() method.
+        return $this->curOrderRepository->update($cutOrder);
     }
 
+    /**
+     * @param CutOrder $cutOrder
+     * @throws ORMException
+     */
     public function delete(CutOrder $cutOrder)
     {
-        // TODO: Implement delete() method.
+       return $this->curOrderRepository->remove($cutOrder);
+    }
+
+    /**
+     * @return array
+     */
+    public function findAllOrders()
+    {
+      return $this->curOrderRepository->findAll();
     }
 }
