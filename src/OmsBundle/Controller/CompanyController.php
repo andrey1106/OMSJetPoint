@@ -4,6 +4,7 @@ namespace OmsBundle\Controller;
 
 use OmsBundle\Entity\Company;
 use OmsBundle\Service\Companies\CompanyServiceInterface;
+use OmsBundle\Service\Contacts\ContactServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
@@ -24,10 +25,12 @@ class CompanyController extends Controller
      * @var CompanyServiceInterface
      */
     private $companyService;
+    private $contactService;
 
-    public function __construct(CompanyServiceInterface $companyService)
+    public function __construct(CompanyServiceInterface $companyService,ContactServiceInterface $contactService)
     {
         $this->companyService = $companyService;
+        $this->contactService=$contactService;
     }
 
     /**
@@ -152,6 +155,9 @@ class CompanyController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($company->getContacts() as $contact){
+            $this->contactService->delete($contact);
+            }
             $this->companyService->delete($company);
         }
 

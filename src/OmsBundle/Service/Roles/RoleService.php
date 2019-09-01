@@ -40,7 +40,7 @@ class RoleService implements RoleServiceInteface
      */
     public function saveRole(Role $role): bool
     {
-        $role->setRole("ROLE_".strtoupper($role->getRole()));
+       // $role->setRole("ROLE_".strtoupper($role->getRole()));
         $role->setDateAdded(new \DateTime());
 
         return $this->roleRepository->insert($role);

@@ -29,7 +29,6 @@ class Material
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Assert\NotBlank
      */
     private $name;
 
@@ -37,8 +36,6 @@ class Material
      * @var string
      *
      * @ORM\Column(name="width", type="decimal", precision=10, scale=2)
-     *
-     * @Assert\NotBlank
      */
     private $width;
 
@@ -47,7 +44,7 @@ class Material
      *
      * @ORM\Column(name="cutSpeed", type="integer")
      *
-     * @Assert\NotBlank
+     *
      */
     private $cutSpeed;
 
@@ -56,7 +53,7 @@ class Material
      *
      * @ORM\Column(name="drillingTime", type="decimal", precision=10, scale=2)
      *
-     * @Assert\NotBlank
+     *
      */
     private $drillingTime;
 

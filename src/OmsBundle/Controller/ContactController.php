@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -103,8 +104,9 @@ class ContactController extends Controller
             $contact->setDateAdded(new \DateTime());
             $contact->setCompany($company);
             $this->contactService->save($contact);
+            return $this->redirectToRoute('contact_show', array('id' => $contact->getId()));
         }
-        return $this->redirectToRoute('contact_show', array('id' => $contact->getId()));
+        return $this->redirectToRoute('contact_new');
     }
 
     /**

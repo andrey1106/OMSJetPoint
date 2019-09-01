@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class UserType extends AbstractType
 {
@@ -26,14 +27,17 @@ class UserType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username',TextType::class,[])
-                ->add('password',TextType::class,[])
-                ->add('fullName',TextType::class,[])
-                ->add('userRoles',EntityType::class,[
-                        'class' => 'OmsBundle:Role',
-                        'expanded' => true,
-                        'multiple' => true
-                    ]
+        $builder->add('username', TextType::class, [
+        ])
+            ->add('password', TextType::class, [
+            ])
+            ->add('fullName', TextType::class, [
+            ])
+            ->add('userRoles', EntityType::class, [
+                    'class' => 'OmsBundle:Role',
+                    'expanded' => true,
+                    'multiple' => true
+                ]
             );
     }
 

@@ -31,6 +31,7 @@ class Contact
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
+     *
      */
     private $name;
 
@@ -47,6 +48,7 @@ class Contact
      *
      * @ORM\Column(name="email", type="string", length=255)
      *
+     *
      */
     private $email;
 
@@ -62,6 +64,7 @@ class Contact
      * @var \DateTime
      *
      * @ORM\Column(name="dateAdded", type="datetime")
+     *
      */
     private $dateAdded;
 

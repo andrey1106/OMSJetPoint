@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class CompanyType extends AbstractType
 {
@@ -17,9 +18,15 @@ class CompanyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('companyID',IntegerType::class,[])
-                ->add('name', TextType::class,[])
-                ->add('address',TextType::class,[])
-                ->add('responsiblePerson', TextType::class,[])
+                ->add('name', TextType::class,[
+
+                ])
+                ->add('address',TextType::class,[
+
+                ])
+                ->add('responsiblePerson', TextType::class,[
+
+                ])
                 ->add('isVAT',CheckboxType::class,[]);
     }/**
      * {@inheritdoc}

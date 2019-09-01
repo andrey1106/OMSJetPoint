@@ -23,11 +23,8 @@ class CutOrderType extends AbstractType
         $builder
                 ->add('company',EntityType::class,[
                 'class' => 'OmsBundle:Company',])
-//                ->add('contact',EntityType::class,[
-//                    'class' => 'OmsBundle:Contact',])
                 ->add('orderstatus',EntityType::class,[
                     'class' => 'OmsBundle:OrderStatus',])
-//                ->add('totalNoVAT')
                 ->add('prices', CollectionType::class,[
                 'entry_type' => PriceType::class,
                 'label' => false,

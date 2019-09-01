@@ -72,11 +72,13 @@ class RoleController extends Controller
      */
     public function newProcess(Request $request)
     {
-        $role = new Role();
-        $form = $this->createForm('OmsBundle\Form\RoleType', $role);
-        $form->handleRequest($request);
-        $this->roleService->saveRole($role);
 
+            $role = new Role();
+            $form = $this->createForm('OmsBundle\Form\RoleType', $role);
+            $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->roleService->saveRole($role);
+        }
         return $this->redirectToRoute('role_show', array('id' => $role->getId()));
     }
 
