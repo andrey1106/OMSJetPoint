@@ -10,6 +10,8 @@ use OmsBundle\Entity\Product;
 use OmsBundle\Repository\ProductRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -88,5 +90,21 @@ class ProductService implements ProductServiceInterface
             $product->setPicture($fileName);
         }
         return  $product;
+    }
+
+    /**
+     * @param Product $product
+     * @return \Exception|IOExceptionInterface
+     */
+    public function removeImage(Product $product)
+    {
+        $filesystem = new Filesystem();
+        try {
+        $filesystem->remove($this->container->getParameter('product_image_directory')."/".$product->getPicture());
+        } catch (IOExceptionInterface $exception) {
+            echo "Error deleting directory at". $exception->getPath();
+        }
+
+        return $exception;
     }
 }

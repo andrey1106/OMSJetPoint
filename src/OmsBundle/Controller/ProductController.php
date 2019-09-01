@@ -154,7 +154,10 @@ class ProductController extends Controller
              */
             $file = $editForm['pictureFile']->getData();
             if ($file) {
-                $product = $this->productService->uploadImage($product, $file);
+
+                $this->productService->removeImage($product);
+
+               $product = $this->productService->uploadImage($product, $file);
             }
             $this->productService->edit($product);
         }
