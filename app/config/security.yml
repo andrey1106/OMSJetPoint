@@ -35,14 +35,13 @@ security:
                 # The route name the user can go to in order to logout
                 path: security_logout
                 # The name of the route to redirect to after logging out
-                target: user_index
+                target: security_login
             logout_on_user_change: true
 
 
     access_control:
     # this is a catch-all for the admin area
     # additional security lives in the controllers
-        - { path: '^/admin', roles: ROLE_ADMIN }
         - { path: '^/admin', roles: ROLE_ADMIN }
         - { path: '^/price', roles: [ROLE_ADMIN, ROLE_USER]}
         - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
