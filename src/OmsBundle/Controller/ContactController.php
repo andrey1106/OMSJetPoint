@@ -148,7 +148,7 @@ class ContactController extends Controller
     /**
      * Displays a form to edit an existing contact entity.
      *
-     * @Route("/{id}/edit", name="contact_edit",methods={"GET", "POST"})
+     * @Route("/{id}/edit",methods={"POST"})
      *
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")
      * @param Request $request
